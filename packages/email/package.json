@@ -26,5 +26,15 @@
     "@react-email/render": "^2.0.0",
     "react": "^19.0.0",
     "resend": "^6.0.0"
+  },
+  "author": "Tudor Damian",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tunder007/monolith_demo.git",
+    "directory": "packages/email"
+  },
+  "homepage": "https://github.com/tunder007/monolith_demo#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

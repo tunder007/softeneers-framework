@@ -29,15 +29,20 @@ after the MVP is additive.
 | 5      | `@softeneers/auth` (better-auth) + login/register template     | ✅ done  |
 | 6      | `@softeneers/email` (Resend + React Email)                     | ✅ done  |
 | 7      | `@softeneers/storage` (S3-compatible) + upload helper          | ✅ done  |
-| 8      | Docs site + examples + `npm publish`                           | ⏳ next  |
+| 8      | Docs site + examples + `npm publish`                           | ✅ done² |
 
-¹ The template is relocated and standalone. Converting it into a pnpm/turbo
-mini-monorepo that _consumes_ the shared packages happens alongside Sprint 3.
+¹ The template is relocated and standalone. Converting it to _consume_ the
+published `@softeneers/*` packages happens post-publish.
+
+² Docs site (`apps/docs`, static HTML generated from the Markdown) and
+publish-readiness (LICENSE, package metadata, `npm pack` verification,
+[`PUBLISHING.md`](./PUBLISHING.md)) are done. The actual `npm publish` is
+intentionally manual — outward-facing and irreversible — and not yet performed.
 
 ## What "done" already covered (Sprint 0)
 
 - [x] Repo restructured into the `softeneers-framework` monorepo
-- [x] `pnpm-workspace.yaml`, `turbo.json`, root `package.json`, `.npmrc`
+- [x] npm `workspaces` + `pnpm-workspace.yaml`, `turbo.json`, root `package.json`
 - [x] `apps/cli` scaffold (bin wired, generation stubbed)
 - [x] `packages/config`, `packages/env` stubs with documented contracts
 - [x] Monolith moved into `templates/next-fullstack` (web + server), deps stripped
@@ -94,11 +99,12 @@ Implemented under `apps/cli/src/` per `CLI-SPEC.md`:
 ## Definition of done per package (Sprints 3–7)
 
 A `@softeneers/*` package is "real" when it: has source under `src/`, builds to
-`dist/`, exports the contract in `PACKAGES.md`, drops `"private": true`, and is
-consumed by the `next-fullstack` template via a `workspace:`/published dep.
+`dist/`, exports the contract in `PACKAGES.md`, is not `private`, and has a
+`node:test` suite. All six (`config`, `env`, `db`, `auth`, `email`, `storage`)
+meet this. Template _consumption_ of the published packages is the remaining
+post-publish step.
 
-## Publishing (Sprint 8)
+## Publishing
 
-Publish `create-softeneers-app` first, then scoped packages with
-`npm publish --access public`. Adopt Changesets for versioning before the first
-public release.
+See [`PUBLISHING.md`](./PUBLISHING.md) for the order, the `npm pack` pre-flight,
+and the (manual) publish commands.

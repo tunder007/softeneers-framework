@@ -23,5 +23,15 @@
   },
   "dependencies": {
     "zod": "^3.23.0"
+  },
+  "author": "Tudor Damian",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tunder007/monolith_demo.git",
+    "directory": "packages/env"
+  },
+  "homepage": "https://github.com/tunder007/monolith_demo#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

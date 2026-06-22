@@ -30,5 +30,12 @@
   "license": "MIT",
   "dependencies": {
     "@clack/prompts": "^0.7.0"
-  }
+  },
+  "author": "Tudor Damian",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tunder007/monolith_demo.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/tunder007/monolith_demo#readme"
 }

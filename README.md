@@ -10,21 +10,26 @@ npx create-softeneers-app@latest my-app
 
 …that scaffolds an organized, scalable, standardized project from a template.
 
-> **Status:** the monorepo, the `next-fullstack` template, the CLI, and the
-> `@softeneers/config` + `@softeneers/env` packages work end-to-end —
+> **Status:** all sprints complete. The monorepo, the `next-fullstack` template,
+> the CLI, and all six `@softeneers/*` packages (config, env, db, auth, email,
+> storage) are built, tested, and publish-ready (the actual `npm publish` is
+> manual — see [`docs/PUBLISHING.md`](./docs/PUBLISHING.md)).
 > `create-softeneers-app` generates an installable, buildable project (verified
-> under npm). The remaining `@softeneers/*` packages are planned. See
-> [`docs/ROADMAP.md`](./docs/ROADMAP.md).
+> under npm). See [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 
 ## Monorepo map
 
 ```
 apps/
   cli/          create-softeneers-app — the generator (working)
-  docs/         documentation site (future)
+  docs/         static docs site, generated from the Markdown (npm run build)
 packages/
-  config/       @softeneers/config — shared tsconfig/eslint/prettier (built)
-  env/          @softeneers/env — env validation (built)
+  config/       @softeneers/config — shared tsconfig/eslint/prettier
+  env/          @softeneers/env — env validation (Zod)
+  db/           @softeneers/db — Sequelize/MySQL factory + helpers
+  auth/         @softeneers/auth — better-auth + Express helpers
+  email/        @softeneers/email — Resend + React Email templates
+  storage/      @softeneers/storage — S3-compatible (S3/R2/MinIO)
 templates/
   next-fullstack/   Next.js + Express + Sequelize + MySQL (seeded from a working monolith)
 ```
@@ -39,7 +44,12 @@ Built with **npm workspaces + Turborepo** (npm-first; pnpm also works). Node ≥
 | [`docs/ROADMAP.md`](./docs/ROADMAP.md)           | The 8 sprints, the MVP, current status               |
 | [`docs/CLI-SPEC.md`](./docs/CLI-SPEC.md)         | `create-softeneers-app` prompts + algorithm          |
 | [`docs/PACKAGES.md`](./docs/PACKAGES.md)         | Contract for each `@softeneers/*` package            |
+| [`docs/DECISIONS.md`](./docs/DECISIONS.md)       | Authoritative decisions / tiebreaker                 |
+| [`docs/PUBLISHING.md`](./docs/PUBLISHING.md)     | How packages get to npm                              |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md)           | Setup, conventions, adding packages/templates        |
 | [`TODO.md`](./TODO.md)                           | The original getting-started plan (source of intent) |
+
+Full docs index: [`docs/README.md`](./docs/README.md).
 
 ## Working in this repo
 
@@ -65,6 +75,7 @@ node apps/cli/dist/index.js my-app --yes   # or: node apps/cli/dist/index.js .  
 
 ## What's next
 
-**Sprint 4**: `@softeneers/db` (Sequelize + mysql2) with a Docker MySQL recipe,
-migrations and seed helpers, consumed by the `next-fullstack` template. See the
-roadmap for the full sequence.
+All eight sprints are complete. Remaining, post-publish work: run `npm publish`
+([`docs/PUBLISHING.md`](./docs/PUBLISHING.md)), then wire the `next-fullstack`
+template to consume the published `@softeneers/*` packages, and add more
+templates (TanStack/Hono) and React Email/UI components.

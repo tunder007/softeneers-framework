@@ -21,5 +21,15 @@
     "prettier": ">=3",
     "typescript": ">=5",
     "typescript-eslint": ">=8"
+  },
+  "author": "Tudor Damian",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tunder007/monolith_demo.git",
+    "directory": "packages/config"
+  },
+  "homepage": "https://github.com/tunder007/monolith_demo#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

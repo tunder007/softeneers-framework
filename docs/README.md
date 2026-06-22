@@ -11,10 +11,14 @@ Start here. Suggested reading order:
 4. **[PACKAGES.md](./PACKAGES.md)** — the contract for each `@softeneers/*` package.
 5. **[DECISIONS.md](./DECISIONS.md)** — authoritative decisions / tiebreakers.
    When two docs seem to conflict, this file wins.
+6. **[PUBLISHING.md](./PUBLISHING.md)** — how the packages get to npm.
 
 Related, at the repo root: [`../README.md`](../README.md) (overview),
+[`../CONTRIBUTING.md`](../CONTRIBUTING.md) (setup + conventions),
 [`../TODO.md`](../TODO.md) (original intent), [`../PROJECT-BENCHMARK.md`](../PROJECT-BENCHMARK.md)
 (latest maturity benchmark), [`../CLAUDE.md`](../CLAUDE.md) (agent entry contract).
+A browsable HTML version of these docs is generated into `apps/docs/dist/` by
+`npm run build`.
 
 ## Conventions
 

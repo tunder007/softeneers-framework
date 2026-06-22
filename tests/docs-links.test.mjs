@@ -10,15 +10,21 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const DOCS = [
   "README.md",
+  "CONTRIBUTING.md",
   "docs/README.md",
   "docs/ARCHITECTURE.md",
   "docs/ROADMAP.md",
   "docs/CLI-SPEC.md",
   "docs/PACKAGES.md",
   "docs/DECISIONS.md",
+  "docs/PUBLISHING.md",
   "apps/cli/README.md",
   "packages/config/README.md",
   "packages/env/README.md",
+  "packages/db/README.md",
+  "packages/auth/README.md",
+  "packages/email/README.md",
+  "packages/storage/README.md",
 ];
 
 const LINK = /\]\(([^)]+)\)/g;
