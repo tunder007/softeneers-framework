@@ -52,13 +52,14 @@ test("golden: --yes generation produces the expected next-fullstack tree", () =>
   assert.equal(readFileSync(join(target, "README.md"), "utf8").includes("{{PROJECT_NAME}}"), false);
 });
 
-test("unavailable template exits non-zero", () => {
+test("unknown template exits non-zero", () => {
+  const dir = mkdtempSync(join(tmpdir(), "sft-cli-"));
   const res = spawnSync(
     "node",
-    [CLI, "x", "--template", "hono-api", "--yes", "--no-install", "--no-git"],
+    [CLI, join(dir, "app"), "--template", "no-such-template", "--yes", "--no-install", "--no-git"],
     {
       encoding: "utf8",
     },
   );
-  assert.equal(res.status, 1);
+  assert.equal(res.status, 1, res.stdout + res.stderr);
 });
