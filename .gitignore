@@ -41,10 +41,12 @@ pnpm-lock.yaml
 # CLI build artifact: templates are bundled into the package at build time
 /apps/cli/templates
 
-# Benchmark raw machine outputs (regenerated on demand). PROJECT-BENCHMARK.md is
-# the kept summary and PROJECT-BENCHMARK.html its committed human view.
+# Benchmark machine outputs (regenerated on demand). PROJECT-BENCHMARK.md is the
+# kept summary; the HTML/JSON the tool emits are artifacts (human view = landing).
 benchmark.json
+benchmark.html
 project-benchmark.json
+project-benchmark.html
 
 # Tool-generated artifacts we don't track (regenerated on demand)
 .cursor
