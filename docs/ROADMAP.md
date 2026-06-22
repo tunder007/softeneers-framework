@@ -30,14 +30,22 @@ after the MVP is additive.
 | 6      | `@softeneers/email` (Resend + React Email)                     | ✅ done  |
 | 7      | `@softeneers/storage` (S3-compatible) + upload helper          | ✅ done  |
 | 8      | Docs site + examples + `npm publish`                           | ✅ done² |
+| 9      | Multi-template generator: 5 templates + db/auth/docker toggles  | ✅ done³ |
 
 ¹ The template is relocated and standalone. Converting it to _consume_ the
 published `@softeneers/*` packages happens post-publish.
 
-² Docs site (`apps/docs`, static HTML generated from the Markdown) and
-publish-readiness (LICENSE, package metadata, `npm pack` verification,
-[`PUBLISHING.md`](./PUBLISHING.md)) are done. The actual `npm publish` is
-intentionally manual — outward-facing and irreversible — and not yet performed.
+² Docs site (`apps/docs`, committed HTML companions generated from the Markdown)
+and publishing are done: `create-softeneers-app` and the six `@softeneers/*`
+packages are live on npm (0.1.0). See [`PUBLISHING.md`](./PUBLISHING.md).
+
+³ The generator now ships five templates — `next-fullstack`, `express-api`,
+`hono-api`, `tanstack-start`, `minimal` — so different users pick the stack that
+fits. The API/fullstack templates carry the full feature set (cars CRUD, health,
+example data) with composable `db` (MySQL/Sequelize via `@softeneers/db` vs an
+in-memory store), `auth` (`@softeneers/auth`/better-auth), and `docker` toggles.
+Each is build-verified across its toggle combinations; runtime e2e (live DB/auth)
+is validated against published packages. Manifest + marker engine: `fragments.ts`.
 
 ## What "done" already covered (Sprint 0)
 

@@ -347,7 +347,9 @@ Example:
 
 ## 5. Recommended npm Packages
 
-````txt
+Long term, you could publish:
+
+```txt
 create-softeneers-app
 @softeneers/auth
 @softeneers/db
@@ -358,6 +360,15 @@ create-softeneers-app
 @softeneers/logger
 @softeneers/api
 @softeneers/config
+```
+
+The first important package is:
+
+```txt
+create-softeneers-app
+```
+
+The rest can come later.
 
 ---
 
@@ -383,7 +394,7 @@ Next steps:
 cd my-app
 pnpm install
 pnpm dev
-````
+```
 
 ---
 

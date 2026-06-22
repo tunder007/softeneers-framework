@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decisions (tiebreaker) — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./DECISIONS.md">view DECISIONS.md source</a></div>
+<main><h1>Authoritative Decisions</h1>
+<p>The tiebreaker document. When any other doc, comment, or code seems to contradict another, <strong>this file is authoritative</strong>. Each entry is dated and states the decision, the rationale, and what it overrides.</p>
+<p>Format: <code>D-NN — decision (date)</code>.</p>
+<p>---</p>
+<h2>D-01 — npm-first, but package-manager-agnostic (2026-06-22)</h2>
+<p>The framework, the template, and generated projects must work with <strong>npm or pnpm</strong>. npm is the default and the committed lockfile is <code>package-lock.json</code> (<code>pnpm-lock.yaml</code> is gitignored). The repo ships both an npm <code>workspaces</code> field and <code>pnpm-workspace.yaml</code>; <code>packageManager</code> is pinned to npm because Turborepo requires it to resolve the workspace.</p>
+<p><strong>Overrides</strong> <code>TODO.md</code> §8, which named pnpm as the package manager.</p>
+<h2>D-02 — Templates are payload, not workspace members (2026-06-22)</h2>
+<p><code>templates/*</code> are excluded from both workspace globs. They are copied verbatim by the CLI and must stay self-contained (no <code>node_modules</code>, no <code>workspace:</code> links to this repo's packages). A template consumes a published <code>@softeneers/*</code> only after that package is published.</p>
+<h2>D-03 — Build tooling lives at the repo root (2026-06-22)</h2>
+<p><code>typescript</code>, <code>tsx</code>, <code>eslint</code>, <code>prettier</code>, <code>turbo</code>, and the typescript-eslint stack are root devDependencies, shared by all packages. Packages declare only their own runtime deps. <code>@softeneers/config</code> lists the lint stack as <code>peerDependencies</code> for publish correctness.</p>
+<p><strong>Rationale</strong>: per-package tooling devDeps made npm leave dangling <code>.bin</code> symlinks, and a workspace package owning the typescript-eslint graph crashed npm's link resolver. Root-only tooling avoids both.</p>
+<h2>D-04 — Lint is a single root pass; everything else goes through Turbo (2026-06-22)</h2>
+<p><code>npm run lint</code> runs <code>eslint .</code> once at the root (flat config, ignores dist/.next/node_modules/templates). <code>build</code>, <code>dev</code>, <code>typecheck</code>, <code>test</code> run through Turbo for caching and topological order.</p>
+<h2>D-05 — <code>@softeneers/env</code> exposes <code>createEnv</code>, not a pre-built <code>env</code> (2026-06-22)</h2>
+<p>The package can't know an app's schema ahead of time, so the API is <code>createEnv({ schema })</code> (returns a frozen typed object) plus <code>EnvValidationError</code> and a re-exported <code>z</code>. The conventional name for the result is <code>env</code>.</p>
+<p><strong>Overrides</strong> earlier prose in <code>PACKAGES.md</code> that implied a ready-made <code>env</code> export.</p>
+<h2>D-06 — Reproducible installs use <code>npm ci</code> (2026-06-22)</h2>
+<p><code>package-lock.json</code> is committed. CI and clean setups use <code>npm ci</code>. Incremental <code>npm install</code> on some Node/npm versions can leave a partially-corrupted tree; a clean install (or <code>npm ci</code>) is always sound.</p>
+<h2>D-07 — Docs are dual-format: <code>.md</code> is the source, <code>.html</code> is the human view (2026-06-22)</h2>
+<p>Every key document is authored as Markdown (<code>.md</code>) — the AI-optimized source of truth — and gets a committed, human-readable <code>.html</code> companion <strong>beside it</strong> (<code>docs/ARCHITECTURE.md</code> → <code>docs/ARCHITECTURE.html</code>), plus a browsable root <code>index.html</code>. The HTML is generated by <code>apps/docs</code> (<code>npm run build</code>) and must never be hand-edited; edit the <code>.md</code> and regenerate.</p>
+<p><strong>Scope</strong>: the canonical docs only (root + <code>docs/</code> + package READMEs). The <code>templates/</code> payload is excluded — its READMEs stay <code>.md</code>-only, and links into <code>templates/</code> are not rewritten to <code>.html</code>.</p>
+<p><strong>Overrides</strong> the earlier setup where <code>apps/docs</code> emitted a throwaway, gitignored <code>apps/docs/dist/</code> site. The companions are now committed so the human view is part of the repo (and discoverable without a build step). The deployed Next.js site in <code>apps/landing</code> remains the public, dynamic marketing+docs site.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

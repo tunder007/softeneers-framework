@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contributing — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="./index.html">← All docs</a><span class="spacer"></span><a class="src" href="./CONTRIBUTING.md">view CONTRIBUTING.md source</a></div>
+<main><h1>Contributing</h1>
+<h2>Setup</h2>
+<pre><code>npm ci          # reproducible install (npm-first; pnpm also works)
+npm run build   # build all packages + the CLI
+npm test        # docs-link test + per-package node:test suites</code></pre>
+<p><code>npm run lint</code>, <code>npm run typecheck</code>, and <code>npm run format</code> round out the local gates. CI (<code>.github/workflows/ci.yml</code>) runs all of them on every push/PR.</p>
+<h2>Conventions</h2>
+<p>Read <a href="docs/ARCHITECTURE.html"><code>docs/ARCHITECTURE.md</code></a> and, when anything seems to conflict, <a href="docs/DECISIONS.html"><code>docs/DECISIONS.md</code></a> — the authoritative tiebreaker. The essentials:</p>
+<ul>
+<li><strong>npm-first, PM-agnostic.</strong> Don't introduce pnpm-only or npm-only assumptions.</li>
+<li><strong>Build tooling lives at the root.</strong> Packages declare only their runtime deps.</li>
+<li><strong>Templates are payload</strong> — never workspace members, never import <code>@softeneers/*</code></li>
+</ul>
+<p>from this repo.</p>
+<ul>
+<li>Tasks go through Turbo (<code>npm run build</code>/<code>test</code>); lint is one root <code>eslint .</code> pass.</li>
+</ul>
+<h2>Adding a <code>@softeneers/*</code> package</h2>
+<ol>
+<li><code>packages/&lt;name&gt;/</code> with <code>package.json</code> (<code>type: module</code>, <code>dist</code> in <code>files</code>,</li>
+</ol>
+<p>build/typecheck/test scripts), <code>tsconfig.json</code> extending <code>@softeneers/config/tsconfig/base.json</code>, <code>src/index.ts</code>, a <code>test/*.test.mjs</code> suite, and a <code>README.md</code>.</p>
+<ol>
+<li>Document its contract in <a href="docs/PACKAGES.html"><code>docs/PACKAGES.md</code></a>.</li>
+<li><code>npm install</code> then <code>npm run build &amp;&amp; npm test</code>.</li>
+</ol>
+<h2>Adding a template</h2>
+<p>Add <code>templates/&lt;name&gt;/</code> (self-contained, both workspace configs, no <code>node_modules</code>), register it in <code>apps/cli/src/templates.ts</code>, and verify with a <code>--yes</code> generation that installs and builds. See <a href="docs/CLI-SPEC.html"><code>docs/CLI-SPEC.md</code></a>.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

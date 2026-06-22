@@ -7,19 +7,27 @@ from one of the bundled templates:
 npx create-softeneers-app@latest my-app
 ```
 
-## Status
+## Templates
 
-**Implemented** for the `next-fullstack` template: interactive wizard, copy +
-transform, `git init`, dependency install, and next-step output. Other templates
-are listed in the wizard as "coming soon".
+Five templates, each for a different kind of user, with composable toggles:
+
+| Template         | What you get                              | Toggles            |
+| ---------------- | ----------------------------------------- | ------------------ |
+| `next-fullstack` | Next.js web + Express/Sequelize/MySQL API | (all-in)           |
+| `express-api`    | Express 5 + TypeScript REST API (cars CRUD) | db · auth · docker |
+| `hono-api`       | Hono + TypeScript API (cars CRUD)         | db · auth · docker |
+| `tanstack-start` | TanStack Start fullstack React app        | db · auth · docker |
+| `minimal`        | Zero-framework Node + TypeScript starter  | (none)             |
 
 ```bash
-npx create-softeneers-app@latest my-app                 # interactive
-npx create-softeneers-app@latest my-app --yes --pm npm  # non-interactive
+npx create-softeneers-app@latest my-app                       # interactive
+npx create-softeneers-app@latest api -t express-api --yes      # all defaults
+npx create-softeneers-app@latest api -t hono-api --no-auth --no-docker
 ```
 
-Flags: `--template <slug>`, `--yes`/`-y`, `--no-install`, `--no-git`,
-`--pm <pnpm|npm|yarn>`, `--help`, `--version`. See
+Flags: `--template <slug>`, `--yes`/`-y`, `--db`/`--no-db`, `--auth`/`--no-auth`,
+`--docker`/`--no-docker`, `--no-install`, `--no-git`, `--pm <pnpm|npm|yarn>`,
+`--help`, `--version`. See
 [`../../docs/CLI-SPEC.md`](../../docs/CLI-SPEC.md) for the full contract.
 
 ## Local development

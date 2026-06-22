@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@softeneers/storage — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./README.md">view README.md source</a></div>
+<main><h1>@softeneers/storage</h1>
+<p>S3-compatible object storage for Softeneers projects — works with <strong>AWS S3, Cloudflare R2, and MinIO</strong>.</p>
+<h2>Usage</h2>
+<pre><code>import { createStorage, uploadFile, getSignedDownloadUrl, deleteFile } from "@softeneers/storage";
+
+const storage = createStorage({
+  endpoint: env.S3_ENDPOINT, // omit for AWS S3; set for R2/MinIO
+  region: env.S3_REGION, // "auto" for R2
+  accessKeyId: env.S3_ACCESS_KEY_ID,
+  secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+  bucket: env.S3_BUCKET,
+});
+
+await uploadFile(storage, { key: "avatars/1.png", body: buffer, contentType: "image/png" });
+const url = await getSignedDownloadUrl(storage, "avatars/1.png", 3600);
+await deleteFile(storage, "avatars/1.png");</code></pre>
+<h2>API</h2>
+<ul>
+<li><code>createStorage(config)</code> — storage handle <code>{ client, bucket }</code> (no network on construct).</li>
+<li><code>uploadFile(storage, { key, body, contentType? })</code> — returns <code>{ key }</code>.</li>
+<li><code>getSignedDownloadUrl(storage, key, expiresIn?)</code> — presigned GET URL (signed locally).</li>
+<li><code>deleteFile(storage, key)</code>.</li>
+<li>Re-exports <code>S3Client</code> and the command classes for advanced use.</li>
+</ul>
+<p>Pair with <a href="../env/README.html"><code>@softeneers/env</code></a> to validate the S3 credentials.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="./index.html">← All docs</a><span class="spacer"></span><a class="src" href="./README.md">view README.md source</a></div>
+<main><h1>Softeneers Framework</h1>
+<p>A <strong>modular fullstack project generator</strong>. Not a from-scratch framework — a CLI plus reusable packages built on top of established tools (Next.js, Express, Sequelize/MySQL, better-auth, Docker). The goal is one command:</p>
+<pre><code>npx create-softeneers-app@latest my-app</code></pre>
+<p>…that scaffolds an organized, scalable, standardized project from a template.</p>
+<p><strong>🌐 Live site:</strong> &lt;https://softeneers-landing.vercel.app&gt;</p>
+<blockquote><strong>Status:</strong> live on npm. <code>create-softeneers-app</code> (and the six <code>@softeneers/*</code></blockquote>
+<blockquote>packages) are published; the generator ships <strong>five templates</strong> — <code>next-fullstack</code>,</blockquote>
+<blockquote><code>express-api</code>, <code>hono-api</code>, <code>tanstack-start</code>, <code>minimal</code> — with composable</blockquote>
+<blockquote><code>db</code>/<code>auth</code>/<code>docker</code> toggles, each build-verified across its combinations. See</blockquote>
+<blockquote><a href="docs/ROADMAP.html"><code>docs/ROADMAP.md</code></a> and <a href="docs/CLI-SPEC.html"><code>docs/CLI-SPEC.md</code></a>.</blockquote>
+<h2>Monorepo map</h2>
+<pre><code>apps/
+  cli/          create-softeneers-app — the generator (working)
+  docs/         static docs site, generated from the Markdown (npm run build)
+  landing/      Next.js marketing site → https://softeneers-landing.vercel.app
+packages/
+  config/       @softeneers/config — shared tsconfig/eslint/prettier
+  env/          @softeneers/env — env validation (Zod)
+  db/           @softeneers/db — Sequelize/MySQL factory + helpers
+  auth/         @softeneers/auth — better-auth + Express helpers
+  email/        @softeneers/email — Resend + React Email templates
+  storage/      @softeneers/storage — S3-compatible (S3/R2/MinIO)
+templates/
+  next-fullstack/   Next.js + Express + Sequelize + MySQL (seeded from a working monolith)
+  express-api/      Express 5 + TypeScript REST API (cars CRUD) · db/auth/docker toggles
+  hono-api/         Hono + TypeScript API (cars CRUD)           · db/auth/docker toggles
+  tanstack-start/   TanStack Start fullstack React app          · db/auth/docker toggles
+  minimal/          Zero-framework Node + TypeScript starter</code></pre>
+<p>Built with <strong>npm workspaces + Turborepo</strong> (npm-first; pnpm also works). Node ≥ 18.</p>
+<h2>Documentation</h2>
+<table><thead><tr><th>Doc</th><th>What's in it</th></tr></thead><tbody>
+<tr><td><a href="docs/ARCHITECTURE.html"><code>docs/ARCHITECTURE.md</code></a></td><td>Layout, package vs template, data flow, conventions</td></tr>
+<tr><td><a href="docs/ROADMAP.html"><code>docs/ROADMAP.md</code></a></td><td>The 8 sprints, the MVP, current status</td></tr>
+<tr><td><a href="docs/CLI-SPEC.html"><code>docs/CLI-SPEC.md</code></a></td><td><code>create-softeneers-app</code> prompts + algorithm</td></tr>
+<tr><td><a href="docs/PACKAGES.html"><code>docs/PACKAGES.md</code></a></td><td>Contract for each <code>@softeneers/*</code> package</td></tr>
+<tr><td><a href="docs/DECISIONS.html"><code>docs/DECISIONS.md</code></a></td><td>Authoritative decisions / tiebreaker</td></tr>
+<tr><td><a href="docs/PUBLISHING.html"><code>docs/PUBLISHING.md</code></a></td><td>How packages get to npm</td></tr>
+<tr><td><a href="CONTRIBUTING.html"><code>CONTRIBUTING.md</code></a></td><td>Setup, conventions, adding packages/templates</td></tr>
+<tr><td><a href="TODO.html"><code>TODO.md</code></a></td><td>The original getting-started plan (source of intent)</td></tr>
+</tbody></table>
+<p>Full docs index: <a href="docs/README.html"><code>docs/README.md</code></a>.</p>
+<h2>Working in this repo</h2>
+<p>npm-first, but pnpm works too (both workspace configs ship).</p>
+<pre><code>npm install         # install workspace deps
+npm run build       # turbo run build across packages + apps
+npm run dev         # turbo run dev
+npm run lint        # eslint . (single root pass)
+npm run typecheck</code></pre>
+<p>The <code>next-fullstack</code> template is standalone — to run the generated-style app directly, see <a href="./templates/next-fullstack/README.md"><code>templates/next-fullstack/README.md</code></a>.</p>
+<h2>Try the generator (from source)</h2>
+<pre><code>npm run build
+node apps/cli/dist/index.js my-app --yes   # or: node apps/cli/dist/index.js .   (current dir)</code></pre>
+<h2>What's next</h2>
+<p>The express/hono/tanstack templates already consume the published <code>@softeneers/*</code> packages (<code>env</code>/<code>db</code>/<code>auth</code>) via their toggles. Remaining work: convert <code>next-fullstack</code> to consume them too, expand the <code>auth</code> toggle into a ready-made sign-in/up UI per template, and add <code>@softeneers/email</code>/<code>storage</code> toggles. See <a href="docs/ROADMAP.html"><code>docs/ROADMAP.md</code></a>.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

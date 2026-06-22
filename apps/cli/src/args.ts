@@ -15,6 +15,10 @@ export interface CliOptions {
   git: boolean;
   /** Package manager for install + next-step hints. */
   packageManager: PackageManager;
+  /** Feature toggles. Undefined → prompt (or use the template default with --yes). */
+  db?: boolean;
+  auth?: boolean;
+  docker?: boolean;
   help: boolean;
   version: boolean;
 }
@@ -56,6 +60,24 @@ export function parseArgs(argv: string[]): CliOptions {
         break;
       case "--no-git":
         opts.git = false;
+        break;
+      case "--db":
+        opts.db = true;
+        break;
+      case "--no-db":
+        opts.db = false;
+        break;
+      case "--auth":
+        opts.auth = true;
+        break;
+      case "--no-auth":
+        opts.auth = false;
+        break;
+      case "--docker":
+        opts.docker = true;
+        break;
+      case "--no-docker":
+        opts.docker = false;
         break;
       case "--help":
       case "-h":
@@ -102,16 +124,27 @@ Usage:
   npx create-softeneers-app@latest [directory|.] [options]
 
 Options:
-  -t, --template <name>   Template to use (default: prompt; only "next-fullstack" for now)
+  -t, --template <name>   Template to use (default: prompt)
   -y, --yes               Accept defaults, no prompts
+      --db / --no-db      Include a database layer (template default if unset)
+      --auth / --no-auth  Include authentication (template default if unset)
+      --docker / --no-docker  Include a Docker recipe (template default if unset)
       --no-install        Don't install dependencies
       --no-git            Don't run "git init"
       --pm <npm|pnpm|yarn> Package manager (default: auto-detected, else npm)
   -h, --help              Show this help
   -v, --version           Show version
 
+Templates:
+  next-fullstack   Next.js web + Express/Sequelize/MySQL API (db, auth, docker)
+  express-api      Express + TypeScript REST API           (db, auth, docker)
+  hono-api         Hono + TypeScript API                   (db, auth, docker)
+  tanstack-start   TanStack Start fullstack React app      (db, auth, docker)
+  minimal          Zero-framework Node + TypeScript starter (no toggles)
+
 Examples:
-  npx create-softeneers-app@latest my-app      # scaffold into ./my-app
-  npx create-softeneers-app@latest .           # scaffold into the current directory
-  npm create softeneers-app@latest my-app -- --yes
+  npx create-softeneers-app@latest my-app                      # interactive
+  npx create-softeneers-app@latest api -t express-api --yes    # all defaults
+  npx create-softeneers-app@latest api -t hono-api --no-auth --no-docker
+  npx create-softeneers-app@latest .                           # current directory
 `;

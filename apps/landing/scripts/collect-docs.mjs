@@ -60,6 +60,44 @@ npm i @softeneers/env @softeneers/db @softeneers/auth @softeneers/email @softene
 See **Packages** in the sidebar for each package's API.
 `;
 
+const GH = "https://github.com/tunder007/monolith_demo/blob/main/";
+
+// Rewrite a Markdown link target to its in-site docs route (or a GitHub fallback),
+// so the collected content is self-consistent on disk. Mirrors resolveHref() in
+// lib/docs.ts — keep the two in sync.
+function resolveHref(href) {
+  if (/^(https?:|mailto:|#)/.test(href)) return href;
+  const [pathPart, frag] = href.split("#");
+  const hash = frag ? `#${frag}` : "";
+  const path = pathPart.split("?")[0];
+
+  const pkg = path.match(/(?:^|\/)(config|env|db|auth|email|storage)\/README\.md$/);
+  if (pkg) return `/docs/pkg-${pkg[1]}${hash}`;
+
+  const base = path.split("/").pop() ?? "";
+  const map = {
+    "ARCHITECTURE.md": "/docs/architecture",
+    "ROADMAP.md": "/docs/roadmap",
+    "CLI-SPEC.md": "/docs/cli",
+    "PACKAGES.md": "/docs/packages",
+    "DECISIONS.md": "/docs/decisions",
+    "PUBLISHING.md": "/docs/publishing",
+    "CONTRIBUTING.md": "/docs/contributing",
+  };
+  if (map[base]) return map[base] + hash;
+  if (base === "README.md") return (path.includes("docs/") ? "/docs" : "/docs/overview") + hash;
+  if (path.endsWith(".html")) return GH + path.replace(/^\.\//, "").replace(/^(\.\.\/)+/, "");
+  if (path.endsWith(".md") || /LICENSE|BENCHMARK|MANIFEST|TODO/i.test(base)) {
+    return GH + path.replace(/^\.\//, "").replace(/^(\.\.\/)+/, "");
+  }
+  return href;
+}
+
+// Rewrite inline + reference-style Markdown links in a doc body.
+function rewriteLinks(md) {
+  return md.replace(/(\]\()([^)\s]+)(\))/g, (_m, open, href, close) => open + resolveHref(href) + close);
+}
+
 /** group | slug | title | source path relative to repo root (or null = inline) */
 const PAGES = [
   ["Guides", "overview", "Overview", "README.md"],
@@ -93,7 +131,7 @@ for (const [group, slug, title, src] of PAGES) {
       console.warn(`collect-docs: missing ${src} — skipping ${slug}`);
       continue;
     }
-    md = readFileSync(abs, "utf8");
+    md = rewriteLinks(readFileSync(abs, "utf8"));
   }
   writeFileSync(join(OUT, `${slug}.md`), md);
   manifest.push({ slug, title, group });

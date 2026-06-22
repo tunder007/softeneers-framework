@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation index — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./README.md">view README.md source</a></div>
+<main><h1>Softeneers Framework — Documentation</h1>
+<p>Start here. Suggested reading order:</p>
+<ol>
+<li><strong><a href="ARCHITECTURE.html">ARCHITECTURE.md</a></strong> — what the framework is, the monorepo</li>
+</ol>
+<p>layout, the package-vs-template distinction, conventions.</p>
+<ol>
+<li><strong><a href="ROADMAP.html">ROADMAP.md</a></strong> — the sprints, the MVP, and current status</li>
+</ol>
+<p>(the source of truth for "what's done").</p>
+<ol>
+<li><strong><a href="CLI-SPEC.html">CLI-SPEC.md</a></strong> — the <code>create-softeneers-app</code> contract:</li>
+</ol>
+<p>prompts, flags, and the copy/transform algorithm.</p>
+<ol>
+<li><strong><a href="PACKAGES.html">PACKAGES.md</a></strong> — the contract for each <code>@softeneers/*</code> package.</li>
+<li><strong><a href="DECISIONS.html">DECISIONS.md</a></strong> — authoritative decisions / tiebreakers.</li>
+</ol>
+<p>When two docs seem to conflict, this file wins.</p>
+<ol>
+<li><strong><a href="PUBLISHING.html">PUBLISHING.md</a></strong> — how the packages get to npm.</li>
+</ol>
+<p>Related, at the repo root: <a href="../README.html"><code>../README.md</code></a> (overview), <a href="../CONTRIBUTING.html"><code>../CONTRIBUTING.md</code></a> (setup + conventions), <a href="../TODO.html"><code>../TODO.md</code></a> (original intent), <a href="../PROJECT-BENCHMARK.html"><code>../PROJECT-BENCHMARK.md</code></a> (latest maturity benchmark), <a href="../CLAUDE.html"><code>../CLAUDE.md</code></a> (agent entry contract). Each doc has a committed, human-readable <code>.html</code> companion beside it (e.g. <a href="ARCHITECTURE.html"><code>ARCHITECTURE.html</code></a> next to <code>ARCHITECTURE.md</code>), with a browsable <a href="../index.html"><code>index.html</code></a> at the repo root. These are generated from the Markdown by <code>apps/docs</code> (<code>npm run build</code>) — never hand-edit them. The deployed, public marketing+docs site is live at &lt;https://softeneers-landing.vercel.app&gt; (source in <code>apps/landing</code>).</p>
+<h2>Conventions</h2>
+<ul>
+<li><code>.md</code> files are the AI-optimized source of truth; their <code>.html</code> companions are</li>
+</ul>
+<p>the generated human view (see <a href="DECISIONS.html">DECISIONS.md</a> D-07).</p>
+<ul>
+<li>Every relative link in these docs must resolve (checked in CI via the docs</li>
+</ul>
+<p>link test).</p>
+<ul>
+<li>Status claims live in <code>ROADMAP.md</code>; other docs link to it rather than</li>
+</ul>
+<p>duplicating status.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

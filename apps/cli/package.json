@@ -1,7 +1,7 @@
 {
   "name": "create-softeneers-app",
-  "version": "0.1.0",
-  "description": "Scaffold a new Softeneers Framework project from a template.",
+  "version": "0.2.0",
+  "description": "Scaffold a new Softeneers Framework project: 5 templates (next-fullstack, express-api, hono-api, tanstack-start, minimal) with db/auth/docker toggles.",
   "type": "module",
   "bin": {
     "create-softeneers-app": "dist/index.js"

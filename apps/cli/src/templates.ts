@@ -8,24 +8,51 @@ export interface TemplateInfo {
   hint: string;
   /** false → shown in the wizard but not yet generatable. */
   available: boolean;
+  /** Final line printed after generation (e.g. the local URLs). */
+  outro?: string;
 }
 
 /**
- * The template registry. Only `next-fullstack` is generatable today; the rest
- * are advertised so the wizard reflects the intended menu (docs/CLI-SPEC.md)
- * and light up as they land.
+ * The template registry. Each entry targets a different kind of user; the
+ * db/auth/docker toggles (where supported) are declared per template in its
+ * `softeneers.template.json` manifest.
  */
 export const TEMPLATES: TemplateInfo[] = [
   {
     slug: "next-fullstack",
     label: "Fullstack (Next.js + Express + Sequelize + MySQL)",
-    hint: "web + server monorepo, Docker MySQL",
+    hint: "web + server monorepo",
     available: true,
+    outro: "Web: http://localhost:3000   API: http://localhost:4000",
   },
-  { slug: "tanstack-start", label: "TanStack Start", hint: "coming soon", available: false },
-  { slug: "hono-api", label: "Hono API only", hint: "coming soon", available: false },
-  { slug: "express-api", label: "Express API only", hint: "coming soon", available: false },
-  { slug: "minimal", label: "Minimal", hint: "coming soon", available: false },
+  {
+    slug: "express-api",
+    label: "Express API (TypeScript REST)",
+    hint: "API only · db/auth/docker toggles",
+    available: true,
+    outro: "API: http://localhost:4000",
+  },
+  {
+    slug: "hono-api",
+    label: "Hono API (TypeScript, fast)",
+    hint: "API only · db/auth/docker toggles",
+    available: true,
+    outro: "API: http://localhost:4000",
+  },
+  {
+    slug: "tanstack-start",
+    label: "TanStack Start (fullstack React)",
+    hint: "app + server routes · db/auth/docker toggles",
+    available: true,
+    outro: "App: http://localhost:3000",
+  },
+  {
+    slug: "minimal",
+    label: "Minimal (Node + TypeScript starter)",
+    hint: "zero-framework blank slate",
+    available: true,
+    outro: "Run: npm run dev",
+  },
 ];
 
 export const DEFAULT_TEMPLATE = "next-fullstack";

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadmap & status — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./ROADMAP.md">view ROADMAP.md source</a></div>
+<main><h1>Roadmap</h1>
+<p>Derived from <code>TODO.md</code> §10 (implementation order) and §14 (the MVP). Each sprint is a shippable increment. Status is tracked here as the source of truth.</p>
+<h2>The MVP (TODO §14)</h2>
+<p>A working <code>npx create-softeneers-app my-app</code> that generates:</p>
+<pre><code>my-app/
+  apps/web, apps/server
+  packages/config, packages/env
+  package.json, pnpm-workspace.yaml, turbo.json, docker-compose.yml, README.md</code></pre>
+<p>If that works end-to-end, the foundation of the framework exists. Everything after the MVP is additive.</p>
+<h2>Sprint status</h2>
+<table><thead><tr><th>Sprint</th><th>Goal</th><th>Status</th></tr></thead><tbody>
+<tr><td>0</td><td>Scaffold: monorepo skeleton, docs, template relocation</td><td>✅ done</td></tr>
+<tr><td>1</td><td>Monorepo setup (pnpm + turbo + Next/Express template + README)</td><td>✅ done¹</td></tr>
+<tr><td>2</td><td>CLI that copies the template (<code>create-softeneers-app</code>)</td><td>✅ done</td></tr>
+<tr><td>3</td><td><code>@softeneers/config</code> + <code>@softeneers/env</code> + lint/format</td><td>✅ done</td></tr>
+<tr><td>4</td><td><code>@softeneers/db</code> + Docker MySQL + migrations + seed</td><td>✅ done</td></tr>
+<tr><td>5</td><td><code>@softeneers/auth</code> (better-auth) + login/register template</td><td>✅ done</td></tr>
+<tr><td>6</td><td><code>@softeneers/email</code> (Resend + React Email)</td><td>✅ done</td></tr>
+<tr><td>7</td><td><code>@softeneers/storage</code> (S3-compatible) + upload helper</td><td>✅ done</td></tr>
+<tr><td>8</td><td>Docs site + examples + <code>npm publish</code></td><td>✅ done²</td></tr>
+<tr><td>9</td><td>Multi-template generator: 5 templates + db/auth/docker toggles</td><td>✅ done³</td></tr>
+</tbody></table>
+<p>¹ The template is relocated and standalone. Converting it to _consume_ the published <code>@softeneers/*</code> packages happens post-publish.</p>
+<p>² Docs site (<code>apps/docs</code>, committed HTML companions generated from the Markdown) and publishing are done: <code>create-softeneers-app</code> and the six <code>@softeneers/*</code> packages are live on npm (0.1.0). See <a href="PUBLISHING.html"><code>PUBLISHING.md</code></a>.</p>
+<p>³ The generator now ships five templates — <code>next-fullstack</code>, <code>express-api</code>, <code>hono-api</code>, <code>tanstack-start</code>, <code>minimal</code> — so different users pick the stack that fits. The API/fullstack templates carry the full feature set (cars CRUD, health, example data) with composable <code>db</code> (MySQL/Sequelize via <code>@softeneers/db</code> vs an in-memory store), <code>auth</code> (<code>@softeneers/auth</code>/better-auth), and <code>docker</code> toggles. Each is build-verified across its toggle combinations; runtime e2e (live DB/auth) is validated against published packages. Manifest + marker engine: <code>fragments.ts</code>.</p>
+<h2>What "done" already covered (Sprint 0)</h2>
+<ul>
+<li>[x] Repo restructured into the <code>softeneers-framework</code> monorepo</li>
+<li>[x] npm <code>workspaces</code> + <code>pnpm-workspace.yaml</code>, <code>turbo.json</code>, root <code>package.json</code></li>
+<li>[x] <code>apps/cli</code> scaffold (bin wired, generation stubbed)</li>
+<li>[x] <code>packages/config</code>, <code>packages/env</code> stubs with documented contracts</li>
+<li>[x] Monolith moved into <code>templates/next-fullstack</code> (web + server), deps stripped</li>
+<li>[x] Template root files + <code>docker-compose.yml</code></li>
+<li>[x] Design docs: ARCHITECTURE, ROADMAP, CLI-SPEC, PACKAGES</li>
+<li>[x] Framework README</li>
+</ul>
+<h2>Sprint 2 — the CLI (done)</h2>
+<p>Implemented under <code>apps/cli/src/</code> per <code>CLI-SPEC.md</code>:</p>
+<ol>
+<li><strong>Copy.</strong> <code>create-softeneers-app &lt;dir&gt;</code> copies <code>templates/next-fullstack</code>,</li>
+</ol>
+<p>excluding <code>node_modules</code>/<code>.next</code>/<code>dist</code>/<code>.turbo</code>/lockfiles/real <code>.env</code>.</p>
+<ol>
+<li><strong>Transform.</strong> Rewrites root <code>package.json</code> <code>name</code>, generates <code>.env</code> from every</li>
+</ol>
+<p><code>.env.example</code>, substitutes <code>{{PROJECT_NAME}}</code> in the README.</p>
+<ol>
+<li><strong>Prompts.</strong> <code>@clack/prompts</code> wizard (project name + template select; other</li>
+</ol>
+<p>templates shown as "coming soon"), gated behind <code>--yes</code>/<code>--template</code>.</p>
+<ol>
+<li><strong>Verified end-to-end:</strong> <code>--yes</code> generation produces the expected tree; a real</li>
+</ol>
+<p><code>pnpm install</code> succeeds and <strong>both apps build</strong> (<code>server</code> <code>tsc</code> ✓, <code>web</code> <code>next build</code> ✓). Edge cases covered: <code>--help</code>/<code>--version</code>, unavailable template, unknown option, non-empty target dir.</p>
+<blockquote>Remaining for full parity: granular stack sub-prompts (ORM/auth/email/storage)</blockquote>
+<blockquote>activate as their templates land; runtime <code>docker compose up</code> + <code>db:migrate</code></blockquote>
+<blockquote>verification needs a Docker host (not run in CI yet).</blockquote>
+<h2>Sprint 3 — config + env + lint/format (done)</h2>
+<ul>
+<li><code>@softeneers/config</code>: real <code>tsconfig/base.json</code>, flat ESLint preset, Prettier</li>
+</ul>
+<p>preset; lint stack declared as <code>peerDependencies</code>.</p>
+<ul>
+<li><code>@softeneers/env</code>: <code>createEnv({ schema })</code> over Zod, returns a frozen typed</li>
+</ul>
+<p>object, throws <code>EnvValidationError</code> with a readable summary; smoke-tested.</p>
+<ul>
+<li>Dogfooded: CLI extends the base tsconfig; root <code>eslint.config.js</code> /</li>
+</ul>
+<p><code>prettier.config.js</code> use the presets; <code>npm run lint</code> / <code>format</code> / <code>typecheck</code> pass.</p>
+<blockquote><strong>npm-first / PM-agnostic</strong> was folded in here per scope guidance: the repo,</blockquote>
+<blockquote>the template, and the CLI work with <strong>npm or pnpm</strong>. Concretely — npm</blockquote>
+<blockquote><code>workspaces</code> + <code>pnpm-workspace.yaml</code> both ship; <code>package-lock.json</code> is the</blockquote>
+<blockquote>committed lockfile (pnpm-lock gitignored); the CLI auto-detects the PM</blockquote>
+<blockquote>(default npm), supports <code>create-softeneers-app .</code> (current dir), and writes the</blockquote>
+<blockquote>generated <code>packageManager</code> field to match. Verified: a generated project</blockquote>
+<blockquote>installs and builds under <strong>npm</strong> end-to-end.</blockquote>
+<blockquote>Build-tooling note: tooling is hoisted to the root (one shared copy). Declaring</blockquote>
+<blockquote><code>typescript</code>/<code>tsx</code> per-package made npm leave dangling <code>.bin</code> symlinks; and a</blockquote>
+<blockquote>workspace package owning the typescript-eslint dep graph crashed npm's link</blockquote>
+<blockquote>resolver — both avoided by keeping tooling at the root and using peerDeps in</blockquote>
+<blockquote><code>@softeneers/config</code>.</blockquote>
+<blockquote>Still deferred: converting the <code>next-fullstack</code> template to _consume_ the</blockquote>
+<blockquote>published <code>@softeneers/config</code>/<code>env</code> (awaits publish, Sprint 8).</blockquote>
+<h2>Definition of done per package (Sprints 3–7)</h2>
+<p>A <code>@softeneers/*</code> package is "real" when it: has source under <code>src/</code>, builds to <code>dist/</code>, exports the contract in <code>PACKAGES.md</code>, is not <code>private</code>, and has a <code>node:test</code> suite. All six (<code>config</code>, <code>env</code>, <code>db</code>, <code>auth</code>, <code>email</code>, <code>storage</code>) meet this. Template _consumption_ of the published packages is the remaining post-publish step.</p>
+<h2>Publishing</h2>
+<p>See <a href="PUBLISHING.html"><code>PUBLISHING.md</code></a> for the order, the <code>npm pack</code> pre-flight, and the (manual) publish commands.</p>
+<h2>Quality benchmark</h2>
+<p>Scored with <code>softeneers-tools</code> (deterministic-checker, composed into project-benchmark). Latest summary lives in <a href="../PROJECT-BENCHMARK.html"><code>../PROJECT-BENCHMARK.md</code></a>.</p>
+<table><thead><tr><th>Metric (project-benchmark)</th><th>Baseline (Sprint 3)</th><th>Final</th></tr></thead><tbody>
+<tr><td>Maturity</td><td>4.4 / 10 (L1)</td><td>6.1 / 10 (L3 Rigorous)</td></tr>
+<tr><td>docs</td><td>3.1</td><td>8</td></tr>
+<tr><td>code</td><td>4.5</td><td>7.3</td></tr>
+<tr><td>rigor</td><td>3</td><td>8</td></tr>
+<tr><td>governance</td><td>5.5</td><td>8</td></tr>
+<tr><td>ai-optimization</td><td>8.8</td><td>9.2</td></tr>
+</tbody></table>
+<p>deterministic-checker: <strong>AI-opt 9.2 · Determinism 7.7 · Composite 8.5 / 10</strong>, zero P0/P1 findings. The lagging dimensions are softeneers-ecosystem conventions satisfied differently on purpose: <strong>human</strong> uses a generated docs site (<code>apps/docs/dist</code>) rather than committed <code>.html</code> companions; <strong>tooling</strong> uses standard npm/Turbo scripts + CI rather than <code>.claude/skills</code> shells.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

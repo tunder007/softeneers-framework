@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./ARCHITECTURE.md">view ARCHITECTURE.md source</a></div>
+<main><h1>Architecture</h1>
+<p>Softeneers Framework is <strong>not</strong> a from-scratch framework like Next.js. It is a <strong>modular project generator plus a set of reusable packages</strong> built on top of established tools. The deliverable users touch is one command:</p>
+<pre><code>npx create-softeneers-app@latest my-app</code></pre>
+<p>This document describes how the monorepo that produces that command is laid out.</p>
+<h2>Monorepo layout</h2>
+<pre><code>softeneers-framework/
+  apps/
+    cli/          create-softeneers-app — the generator binary
+    docs/         documentation site (future)
+  packages/
+    config/       @softeneers/config — shared tsconfig/eslint/prettier
+    env/          @softeneers/env — env validation
+    (db, auth, email, storage, logger, api, ui — added per ROADMAP)
+  templates/
+    next-fullstack/   the project the CLI copies; a mini-monorepo itself
+  package.json          root, private, workspace orchestrator
+  pnpm-workspace.yaml   workspace members (apps/*, packages/* — NOT templates/*)
+  turbo.json            task pipeline</code></pre>
+<p>Tooling: <strong>npm workspaces + Turborepo</strong>, npm-first but package-manager-agnostic. The repo ships both an npm <code>workspaces</code> field and a <code>pnpm-workspace.yaml</code>, so it works with <strong>npm or pnpm</strong>; <code>packageManager</code> is pinned to npm (Turbo requires it to resolve the workspace). The committed lockfile is <code>package-lock.json</code>; <code>pnpm-lock.yaml</code> is gitignored. Node ≥ 18.</p>
+<h2>The two kinds of directories</h2>
+<p>There is one distinction that drives every decision in this repo:</p>
+<table><thead><tr><th>Kind</th><th>Lives in</th><th>Workspace member?</th><th>Role</th></tr></thead><tbody>
+<tr><td><strong>Package</strong></td><td><code>packages/*</code></td><td>yes</td><td>Published <code>@softeneers/*</code> libraries, consumed by apps</td></tr>
+<tr><td><strong>App</strong></td><td><code>apps/*</code></td><td>yes</td><td>Things we run/build here (the CLI, the docs site)</td></tr>
+<tr><td><strong>Template</strong></td><td><code>templates/*</code></td><td><strong>no</strong></td><td>Source copied _verbatim_ into a generated user project</td></tr>
+</tbody></table>
+<p>Templates are deliberately excluded from the workspace globs (both the npm <code>workspaces</code> field and <code>pnpm-workspace.yaml</code>). They are payload, not code we link against — if a PM hoisted their deps or symlinked them, the copy the CLI ships would be wrong. A template is a self-contained project that happens to live in this repo, and it is itself PM-agnostic (ships both workspace configs; the CLI writes its <code>packageManager</code> field to match the user's chosen PM at generation).</p>
+<h2>The <code>next-fullstack</code> template</h2>
+<p>This is the first template and is seeded from a working monolith (Next.js + Express + Sequelize + MySQL, a cars CRUD). It is itself a mini-monorepo so the generated project matches the structure in <code>TODO.md</code> §11:</p>
+<pre><code>templates/next-fullstack/
+  apps/
+    web/      Next.js 16 + React 19 + Tailwind v4   (the browser app)
+    server/   Express 5 + Sequelize 6 + mysql2      (the JSON API)
+  packages/   (config, env — wired in a later sprint)
+  docker-compose.yml   MySQL 8 for local dev
+  package.json (npm workspaces) / pnpm-workspace.yaml / turbo.json
+  .env.example</code></pre>
+<h3>Request / data flow</h3>
+<pre><code>Browser ──HTTP──▶ apps/web (Next.js)
+                     │  fetch(`${API_URL}/api/cars`)
+                     ▼
+                 apps/server (Express)  ── /api/cars router ──▶ controller
+                     │
+                     ▼
+                 Sequelize models ──▶ MySQL (docker-compose)</code></pre>
+<ul>
+<li><code>apps/web</code> talks to the API base URL (configurable; defaults to</li>
+</ul>
+<p><code>http://localhost:4000</code>). The cars UI lives at <code>app/masini/page.tsx</code>.</p>
+<ul>
+<li><code>apps/server</code> exposes <code>/health</code> and <code>/api/cars</code> (full CRUD). DB credentials</li>
+</ul>
+<p>come from env via <code>config/config.cjs</code>; migrations + seeders under <code>migrations/</code> and <code>seeders/</code> are driven by <code>sequelize-cli</code>.</p>
+<h2>Conventions</h2>
+<ul>
+<li><strong>Package names</strong>: every shared library is scoped <code>@softeneers/&lt;name&gt;</code> and</li>
+</ul>
+<p>imported by that name (<code>import { env } from "@softeneers/env"</code>).</p>
+<ul>
+<li><strong>Module system</strong>: framework tooling (root, CLI, packages) is ESM</li>
+</ul>
+<p>(<code>"type": "module"</code>). The seeded <code>server</code> template is currently CommonJS — migrating it is a later, optional task (see ROADMAP).</p>
+<ul>
+<li><strong>Build tooling lives at the root</strong>, not per-package (one <code>typescript</code>, <code>tsx</code>,</li>
+</ul>
+<p><code>eslint</code>, etc., hoisted and shared). Per-package tooling devDeps caused npm to leave dangling <code>.bin</code> symlinks, so packages declare only their own runtime deps; shared tooling is a root concern. <code>@softeneers/config</code> lists the lint stack as <code>peerDependencies</code> (for publish correctness) — the consumer provides them.</p>
+<ul>
+<li><strong>Task running</strong>: never call a tool directly at the root; go through Turbo</li>
+</ul>
+<p>(<code>npm run build</code> → <code>turbo run build</code>) so caching and topological order apply. Lint is the one exception — a single root <code>eslint .</code> pass (<code>npm run lint</code>).</p>
+<ul>
+<li>**Templates never import <code>@softeneers/*</code> from this workspace.** When a</li>
+</ul>
+<p>template needs a package it depends on the published version (after the package is real and the template is converted). Today they are plain, standalone apps.</p>
+<h2>Build &amp; dependency graph</h2>
+<p><code>turbo.json</code> defines <code>build</code>, <code>dev</code>, <code>typecheck</code>, <code>clean</code>. <code>build</code> and <code>typecheck</code> depend on upstream builds (<code>^build</code>) so <code>packages/*</code> compile before the apps that consume them. <code>dev</code> is persistent and uncached. The CLI <code>build</code> declares both <code>dist/<strong></code> and <code>templates/</strong></code> as outputs so the bundled templates are cached and restored. Lint runs outside Turbo (root <code>eslint .</code>).</p>
+<h2>Status</h2>
+<p>The monorepo, the <code>next-fullstack</code> template, the CLI (<code>create-softeneers-app</code>), and the <code>@softeneers/config</code> + <code>@softeneers/env</code> packages are implemented and verified. The remaining <code>@softeneers/*</code> packages are planned. See <a href="ROADMAP.html"><code>ROADMAP.md</code></a> for status and what is next.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

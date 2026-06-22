@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Package contracts — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./PACKAGES.md">view PACKAGES.md source</a></div>
+<main><h1>Packages</h1>
+<p>The reusable <code>@softeneers/*</code> libraries. Each entry is the <strong>contract</strong> a package must meet to be considered "real" (see <code>ROADMAP.md</code> → Definition of done). Today only <code>config</code> and <code>env</code> are scaffolded; the rest are planned.</p>
+<p>A package is real when it: has <code>src/</code>, builds to <code>dist/</code>, exports the documented surface, drops <code>"private": true</code>, and is consumed by at least one template.</p>
+<p>---</p>
+<h2><code>@softeneers/config</code> — ✅ Sprint 3 (built)</h2>
+<p>Shared, opinionated tooling config so every project formats/lints/types the same.</p>
+<ul>
+<li><strong>Exports</strong>: <code>./tsconfig/base.json</code>, <code>./eslint</code> (flat config array),</li>
+</ul>
+<p><code>./prettier</code>; later <code>./tailwind</code>, <code>./tsup</code>.</p>
+<ul>
+<li><strong>Peer deps</strong>: <code>@eslint/js</code>, <code>eslint</code>, <code>globals</code>, <code>prettier</code>, <code>typescript</code>,</li>
+</ul>
+<p><code>typescript-eslint</code> (the consumer installs them).</p>
+<ul>
+<li><strong>Usage</strong>: <code>{ "extends": "@softeneers/config/tsconfig/base.json" }</code>.</li>
+</ul>
+<h2><code>@softeneers/env</code> — ✅ Sprint 3 (built)</h2>
+<p>Fail-fast environment validation; an app must not boot with a bad <code>.env</code>.</p>
+<ul>
+<li><strong>Exports</strong>: <code>createEnv({ schema, source? })</code> → frozen typed object;</li>
+</ul>
+<p><code>EnvValidationError</code>; <code>z</code> (re-exported Zod).</p>
+<ul>
+<li><strong>Deps</strong>: <code>zod</code>.</li>
+<li><strong>Usage</strong>: <code>const env = createEnv({ schema: { PORT: z.coerce.number() } })</code>.</li>
+</ul>
+<h2><code>@softeneers/db</code> — ✅ Sprint 4 (built)</h2>
+<p>Configured Sequelize (MySQL) factory + connection helpers.</p>
+<ul>
+<li><strong>Exports</strong>: <code>createDb(config)</code> → <code>Sequelize</code> (no connect); <code>assertConnection(db)</code>;</li>
+</ul>
+<p>re-exports <code>Sequelize</code>, <code>Model</code>, <code>DataTypes</code> (+ types).</p>
+<ul>
+<li><strong>Deps</strong>: <code>sequelize</code> + <code>mysql2</code> (Drizzle/Prisma variants later).</li>
+<li><strong>Pairs with</strong>: the template's <code>docker-compose.yml</code> MySQL recipe; <code>sequelize-cli</code></li>
+</ul>
+<p>migrations/seeds in the consuming app.</p>
+<h2><code>@softeneers/auth</code> — ✅ Sprint 5 (built)</h2>
+<p>Authentication built on <strong>better-auth</strong>.</p>
+<ul>
+<li><strong>Exports</strong>: <code>createAuth(options)</code> (email+password by default), <code>getSession</code>,</li>
+</ul>
+<p><code>toNodeHandler</code>, <code>fromNodeHeaders</code>, <code>BetterAuthError</code>, <code>Auth</code>/<code>AuthOptions</code>.</p>
+<ul>
+<li><strong>Deps</strong>: <code>better-auth</code>.</li>
+<li><strong>Deferred</strong>: login/register UI wiring in the template (post-publish).</li>
+</ul>
+<h2><code>@softeneers/email</code> — ✅ Sprint 6 (built)</h2>
+<p>Transactional email.</p>
+<ul>
+<li><strong>Exports</strong>: <code>createEmailClient(apiKey)</code>, <code>sendEmail(client, opts)</code>, templates</li>
+</ul>
+<p><code>WelcomeEmail</code> / <code>ResetPasswordEmail</code>, plus <code>render</code> and <code>Resend</code>.</p>
+<ul>
+<li><strong>Deps</strong>: <code>resend</code>, <code>@react-email/components</code>, <code>@react-email/render</code>, <code>react</code>.</li>
+<li><strong>Extend</strong>: add more React Email templates (invoice, order confirmation).</li>
+</ul>
+<h2><code>@softeneers/storage</code> — ✅ Sprint 7 (built)</h2>
+<p>S3-compatible object storage (AWS S3, Cloudflare R2, MinIO).</p>
+<ul>
+<li><strong>Exports</strong>: <code>createStorage(config)</code>, <code>uploadFile</code>, <code>getSignedDownloadUrl</code>,</li>
+</ul>
+<p><code>deleteFile</code>; re-exports <code>S3Client</code> + command classes.</p>
+<ul>
+<li><strong>Deps</strong>: <code>@aws-sdk/client-s3</code>, <code>@aws-sdk/s3-request-presigner</code>.</li>
+</ul>
+<h2><code>@softeneers/logger</code> — later</h2>
+<p>Standard logger + request/error logging; pluggable sinks (PostHog, Axiom).</p>
+<ul>
+<li><strong>Exports</strong>: <code>logger</code>, <code>requestLogger</code> middleware.</li>
+</ul>
+<h2><code>@softeneers/api</code> — later</h2>
+<p>Frontend↔backend communication: tRPC/oRPC helpers, shared types, typed client, middleware. <strong>Exports</strong>: <code>api</code> client + router helpers.</p>
+<h2><code>@softeneers/ui</code> — later</h2>
+<p>Reusable React components (Button, Input, Card, Modal, Form, Layout) on Tailwind.</p>
+<ul>
+<li><strong>Exports</strong>: named components, e.g. <code>import { Button } from "@softeneers/ui"</code>.</li>
+</ul>
+<p>---</p>
+<h2>Versioning</h2>
+<p>All packages version together via Changesets once publishing begins (Sprint 8). Scoped packages publish with <code>npm publish --access public</code>.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

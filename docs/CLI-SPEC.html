@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLI specification — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./CLI-SPEC.md">view CLI-SPEC.md source</a></div>
+<main><h1>CLI Specification — <code>create-softeneers-app</code></h1>
+<p>The generator binary. This document is the contract for the implementation under <code>apps/cli/src/</code>. The CLI is <strong>implemented and verified</strong> (copy → apply toggles → transform → git init → install → next steps). It ships <strong>five templates</strong>, each targeting a different kind of user, with composable <code>db</code>/<code>auth</code>/<code>docker</code> toggles:</p>
+<table><thead><tr><th>Template</th><th>For</th><th>Toggles</th></tr></thead><tbody>
+<tr><td><code>next-fullstack</code></td><td>a full web + API monorepo</td><td>(all-in)</td></tr>
+<tr><td><code>express-api</code></td><td>a TypeScript REST API</td><td>db · auth · docker</td></tr>
+<tr><td><code>hono-api</code></td><td>a fast, modern API</td><td>db · auth · docker</td></tr>
+<tr><td><code>tanstack-start</code></td><td>a fullstack React app</td><td>db · auth · docker</td></tr>
+<tr><td><code>minimal</code></td><td>a zero-framework TS starter</td><td>(none)</td></tr>
+</tbody></table>
+<p>Each template is build-verified: a generated project installs and builds across its toggle combinations.</p>
+<h2>Invocation</h2>
+<pre><code>npx create-softeneers-app@latest my-app      # interactive
+npm  create softeneers-app@latest my-app      # equivalent</code></pre>
+<h3>Arguments &amp; flags</h3>
+<table><thead><tr><th>Form</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>&lt;directory&gt;</code> or <code>.</code></td><td>Target dir / project name; <code>.</code> scaffolds into the current directory</td></tr>
+<tr><td><code>--template &lt;name&gt;</code></td><td>Skip the template prompt (e.g. <code>next-fullstack</code>)</td></tr>
+<tr><td><code>--yes</code>, <code>-y</code></td><td>Accept all defaults, no prompts (CI-friendly)</td></tr>
+<tr><td><code>--db</code> / <code>--no-db</code></td><td>Force the database toggle on/off (else template default or prompt)</td></tr>
+<tr><td><code>--auth</code> / <code>--no-auth</code></td><td>Force the auth toggle on/off</td></tr>
+<tr><td><code>--docker</code> / <code>--no-docker</code></td><td>Force the Docker toggle on/off</td></tr>
+<tr><td><code>--no-install</code></td><td>Scaffold only; don't run the package manager install</td></tr>
+<tr><td><code>--no-git</code></td><td>Don't run <code>git init</code></td></tr>
+<tr><td>`--pm &lt;npm\</td><td>pnpm\</td><td>yarn&gt;`</td><td>Package manager (default: auto-detected from the invoker, else npm)</td></tr>
+<tr><td><code>--version</code>, <code>--help</code></td><td>Standard</td></tr>
+</tbody></table>
+<p>The default package manager is auto-detected from <code>npm_config_user_agent</code> (set when run via <code>npm</code>/<code>pnpm</code>/<code>yarn create</code>), falling back to <strong>npm</strong>. The chosen PM is written into the generated root <code>package.json</code> <code>packageManager</code> field (with its real detected version) so Turborepo resolves the workspace; the template itself ships both an npm <code>workspaces</code> field and <code>pnpm-workspace.yaml</code>, so the generated project works under npm or pnpm.</p>
+<h2>Prompt flow (interactive)</h2>
+<p>Built with <code>@clack/prompts</code>. Two steps choose the project; the rest are the template's toggles, asked only for the toggles that template supports.</p>
+<pre><code>Project name:   my-app
+Project type:   Fullstack (Next.js+Express) | Express API | Hono API
+                | TanStack Start | Minimal
+Include a database?         (y/N)   ← only if the template supports `db`
+Include authentication?     (y/N)   ← only if the template supports `auth`
+Include a Docker recipe?    (y/N)   ← only if the template supports `docker`</code></pre>
+<p>The menu is data-driven from the template registry (<code>templates.ts</code>), and the toggle prompts are data-driven from each template's manifest (see below). A toggle fixed on the command line (<code>--db</code>, <code>--no-auth</code>, …) skips its prompt; <code>--yes</code> takes each template's default.</p>
+<h2>Toggles &amp; fragments</h2>
+<p>A template may ship a <code>softeneers.template.json</code> manifest declaring optional features and their defaults:</p>
+<pre><code>{
+  "toggles": { "db": true, "auth": false, "docker": true },
+  "fragments": {
+    "db":   { "removePaths": ["src/db.ts", "src/scripts", "docker-compose.yml"],
+              "removeDeps": ["@softeneers/db", "mysql2"],
+              "removeScripts": ["db:migrate", "db:seed", "db:reset"] },
+    "auth": { "removePaths": ["src/auth"], "removeDeps": ["@softeneers/auth"] },
+    "docker": { "removePaths": ["docker-compose.yml"] }
+  }
+}</code></pre>
+<p>When a toggle is <strong>off</strong>, the engine (<code>fragments.ts</code>) deletes that fragment's <code>removePaths</code>, strips its <code>removeDeps</code>/<code>removeScripts</code> from every <code>package.json</code>, and removes conditional blocks from text files. Conditional blocks use comment markers — <code>#if &lt;toggle&gt;</code> / <code>#if !&lt;toggle&gt;</code> … <code>#endif</code> — and nest; the marker lines are always removed. The manifest itself is deleted from the output. Templates with no manifest (e.g. <code>minimal</code>) support no toggles and copy as-is.</p>
+<h2>Generation algorithm</h2>
+<pre><code>1. Resolve target dir (".", a relative, or absolute path); refuse if it is
+   non-empty (ignoring .git/.DS_Store). Project name = basename of the dir.
+2. Select template dir from templates/&lt;name&gt; (default next-fullstack).
+3. Resolve toggles from the template manifest + flags/prompts.
+4. Copy recursively, EXCLUDING: node_modules, .next, dist, .turbo, *.log,
+   and any real .env (only .env.example is copied).
+5. Apply toggles: delete OFF fragments' paths, prune deps/scripts, strip marker
+   blocks, remove the manifest.
+6. Transform the copy:
+     - root package.json: set "name" + pin "packageManager".
+     - generate .env from every .env.example.
+     - substitute {{PROJECT_NAME}} in the README.
+7. git init (unless --no-git).
+8. Install dependencies with the chosen PM (unless --no-install).
+9. Print next steps (conditional on the enabled toggles).</code></pre>
+<h3>Copy exclusions (authoritative list)</h3>
+<p><code>node_modules</code>, <code>.next</code>, <code>out</code>, <code>build</code>, <code>dist</code>, <code>.turbo</code>, <code>.git</code>, <code>*.log</code>, <code>.DS_Store</code>, <code>.env</code>, <code>.env.*</code> (except <code>.env.example</code>), <code>package-lock.json</code> / <code>pnpm-lock.yaml</code> (regenerated on install). The <code>softeneers.template.json</code> manifest is consumed during generation and never written to the output.</p>
+<h2>Final output</h2>
+<pre><code>Done.
+
+Next steps:
+
+  cd my-app
+  pnpm install
+  docker compose up -d        # start MySQL
+  pnpm dev
+
+Your app: http://localhost:3000   API: http://localhost:4000</code></pre>
+<h2>Implementation notes</h2>
+<ul>
+<li>Runtime deps are minimal: <code>@clack/prompts</code> only; everything else from Node's</li>
+</ul>
+<p>stdlib (<code>fs</code>, <code>path</code>, <code>child_process</code>, <code>url</code>).</p>
+<ul>
+<li>Source layout (<code>apps/cli/src/</code>): <code>args.ts</code> (argv parsing + <code>CliError</code>),</li>
+</ul>
+<p><code>templates.ts</code> (registry + path resolver), <code>fragments.ts</code> (manifest + toggle engine), <code>scaffold.ts</code> (copy/transform/git/install), <code>prompts.ts</code> (clack wizard), <code>index.ts</code> (orchestration).</p>
+<ul>
+<li><strong>Template bundling (decided):</strong> templates resolve at runtime from, in order,</li>
+</ul>
+<p>(1) <code>&lt;pkg&gt;/templates/&lt;slug&gt;</code> and (2) the monorepo <code>&lt;pkg&gt;/../../templates/&lt;slug&gt;</code>. The build (<code>scripts/copy-templates.mjs</code>, run after <code>tsc</code>) copies the monorepo <code>templates/</code> into <code>apps/cli/templates/</code> so the published package — whose <code>files</code> includes <code>templates</code> — is self-contained. That copied dir is a build artifact and is gitignored; candidate (2) covers local dev without the copy.</p>
+<ul>
+<li>Exit codes: <code>0</code> success, <code>1</code> user error (bad args, dir exists, unavailable</li>
+</ul>
+<p>template), <code>2</code> internal.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

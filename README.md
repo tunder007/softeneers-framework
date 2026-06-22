@@ -12,12 +12,11 @@ npx create-softeneers-app@latest my-app
 
 **🌐 Live site:** <https://softeneers-landing.vercel.app>
 
-> **Status:** all sprints complete. The monorepo, the `next-fullstack` template,
-> the CLI, and all six `@softeneers/*` packages (config, env, db, auth, email,
-> storage) are built, tested, and publish-ready (the actual `npm publish` is
-> manual — see [`docs/PUBLISHING.md`](./docs/PUBLISHING.md)).
-> `create-softeneers-app` generates an installable, buildable project (verified
-> under npm). See [`docs/ROADMAP.md`](./docs/ROADMAP.md).
+> **Status:** live on npm. `create-softeneers-app` (and the six `@softeneers/*`
+> packages) are published; the generator ships **five templates** — `next-fullstack`,
+> `express-api`, `hono-api`, `tanstack-start`, `minimal` — with composable
+> `db`/`auth`/`docker` toggles, each build-verified across its combinations. See
+> [`docs/ROADMAP.md`](./docs/ROADMAP.md) and [`docs/CLI-SPEC.md`](./docs/CLI-SPEC.md).
 
 ## Monorepo map
 
@@ -35,6 +34,10 @@ packages/
   storage/      @softeneers/storage — S3-compatible (S3/R2/MinIO)
 templates/
   next-fullstack/   Next.js + Express + Sequelize + MySQL (seeded from a working monolith)
+  express-api/      Express 5 + TypeScript REST API (cars CRUD) · db/auth/docker toggles
+  hono-api/         Hono + TypeScript API (cars CRUD)           · db/auth/docker toggles
+  tanstack-start/   TanStack Start fullstack React app          · db/auth/docker toggles
+  minimal/          Zero-framework Node + TypeScript starter
 ```
 
 Built with **npm workspaces + Turborepo** (npm-first; pnpm also works). Node ≥ 18.
@@ -78,7 +81,8 @@ node apps/cli/dist/index.js my-app --yes   # or: node apps/cli/dist/index.js .  
 
 ## What's next
 
-All eight sprints are complete. Remaining, post-publish work: run `npm publish`
-([`docs/PUBLISHING.md`](./docs/PUBLISHING.md)), then wire the `next-fullstack`
-template to consume the published `@softeneers/*` packages, and add more
-templates (TanStack/Hono) and React Email/UI components.
+The express/hono/tanstack templates already consume the published
+`@softeneers/*` packages (`env`/`db`/`auth`) via their toggles. Remaining work:
+convert `next-fullstack` to consume them too, expand the `auth` toggle into a
+ready-made sign-in/up UI per template, and add `@softeneers/email`/`storage`
+toggles. See [`docs/ROADMAP.md`](./docs/ROADMAP.md).

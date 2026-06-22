@@ -11,7 +11,10 @@ function inline(text) {
   s = s.replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`);
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, t, href) => {
-    // Rewrite links to sibling Markdown files to their generated .html page.
+    // Links into the template payload (templates/) keep their .md target — no
+    // .html companion is generated there (the template is copied to users as-is).
+    if (/(^|\/)templates\//.test(href)) return `<a href="${href}">${t}</a>`;
+    // Otherwise rewrite a sibling Markdown link to its generated .html page.
     const h = href.replace(/^\.\//, "").replace(/\.md(#.*)?$/, ".html$1");
     return `<a href="${h}">${t}</a>`;
   });

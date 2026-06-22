@@ -4,6 +4,10 @@ Entry contract for AI agents working in this repository. The authoritative,
 detailed docs live in [`docs/`](./docs/README.md); this file is the quick map.
 When anything seems to conflict, [`docs/DECISIONS.md`](./docs/DECISIONS.md) wins.
 
+**Reading order:** (1) this file, (2) [`docs/README.md`](./docs/README.md) for the
+doc index, (3) the specific [`docs/`](./docs/README.md) page for the area you're
+changing, (4) [`docs/DECISIONS.md`](./docs/DECISIONS.md) for any tiebreak.
+
 ## What this is
 
 **Softeneers Framework** — a modular project generator (`create-softeneers-app`)
@@ -26,7 +30,8 @@ node apps/cli/dist/index.js my-app --yes   # run the generator from source
 
 - `apps/cli` — `create-softeneers-app`. Source in `src/`: `args.ts`, `templates.ts`,
   `scaffold.ts`, `prompts.ts`, `index.ts`. Bundles `templates/` on build.
-- `apps/docs` — zero-dep static docs site generated from the Markdown (`npm run build`).
+- `apps/docs` — zero-dep generator for the committed human-readable `.html`
+  companions beside each canonical `.md` (+ root `index.html`); run via `npm run build`.
 - `apps/landing` — Next.js marketing/landing page, **standalone** (not a workspace
   member), deployed to Vercel at <https://softeneers-landing.vercel.app>. Has its
   own deps/lockfile and `vercel.json` (`framework: nextjs`).
@@ -49,6 +54,8 @@ node apps/cli/dist/index.js my-app --yes   # run the generator from source
 - Every `@softeneers/*` package has `src/`, builds to `dist/`, ships a `node:test`
   suite, and documents its contract in `docs/PACKAGES.md`.
 - Never commit a real `.env` (only `.env.example`).
+- **Docs are dual-format** (D-07): edit the `.md` source, then `npm run build` to
+  regenerate its committed `.html` companion. Never hand-edit a `.html` doc.
 
 ## Verifying a change
 

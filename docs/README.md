@@ -17,13 +17,17 @@ Related, at the repo root: [`../README.md`](../README.md) (overview),
 [`../CONTRIBUTING.md`](../CONTRIBUTING.md) (setup + conventions),
 [`../TODO.md`](../TODO.md) (original intent), [`../PROJECT-BENCHMARK.md`](../PROJECT-BENCHMARK.md)
 (latest maturity benchmark), [`../CLAUDE.md`](../CLAUDE.md) (agent entry contract).
-A browsable HTML version of these docs is generated into `apps/docs/dist/` by
-`npm run build`. The human-facing marketing site is live at
+Each doc has a committed, human-readable `.html` companion beside it (e.g.
+[`ARCHITECTURE.html`](./ARCHITECTURE.html) next to `ARCHITECTURE.md`), with a
+browsable [`index.html`](../index.html) at the repo root. These are generated
+from the Markdown by `apps/docs` (`npm run build`) — never hand-edit them. The
+deployed, public marketing+docs site is live at
 <https://softeneers-landing.vercel.app> (source in `apps/landing`).
 
 ## Conventions
 
-- `.md` files are the AI-optimized source of truth.
+- `.md` files are the AI-optimized source of truth; their `.html` companions are
+  the generated human view (see [DECISIONS.md](./DECISIONS.md) D-07).
 - Every relative link in these docs must resolve (checked in CI via the docs
   link test).
 - Status claims live in `ROADMAP.md`; other docs link to it rather than

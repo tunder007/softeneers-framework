@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><strong>Softeneers Framework docs</strong></div>
+<main><h1>Softeneers Framework — Documentation</h1>
+<p>Human-readable view of the canonical docs. Each page is generated from a
+<code>.md</code> source of truth (linked beside it). The deployed marketing site
+lives at <a href="https://softeneers-landing.vercel.app">softeneers-landing.vercel.app</a>.</p><div class="groups"><section class="group"><h2>Start here</h2><ul><li><a href="README.html">Overview</a> <span class="meta">— <a class="src" href="README.md">README.md</a></span></li><li><a href="docs/README.html">Documentation index</a> <span class="meta">— <a class="src" href="docs/README.md">docs/README.md</a></span></li></ul></section><section class="group"><h2>Reference</h2><ul><li><a href="docs/ARCHITECTURE.html">Architecture</a> <span class="meta">— <a class="src" href="docs/ARCHITECTURE.md">docs/ARCHITECTURE.md</a></span></li><li><a href="docs/ROADMAP.html">Roadmap & status</a> <span class="meta">— <a class="src" href="docs/ROADMAP.md">docs/ROADMAP.md</a></span></li><li><a href="docs/CLI-SPEC.html">CLI specification</a> <span class="meta">— <a class="src" href="docs/CLI-SPEC.md">docs/CLI-SPEC.md</a></span></li><li><a href="docs/PACKAGES.html">Package contracts</a> <span class="meta">— <a class="src" href="docs/PACKAGES.md">docs/PACKAGES.md</a></span></li><li><a href="docs/DECISIONS.html">Decisions (tiebreaker)</a> <span class="meta">— <a class="src" href="docs/DECISIONS.md">docs/DECISIONS.md</a></span></li><li><a href="docs/PUBLISHING.html">Publishing</a> <span class="meta">— <a class="src" href="docs/PUBLISHING.md">docs/PUBLISHING.md</a></span></li><li><a href="apps/cli/README.html">create-softeneers-app (CLI)</a> <span class="meta">— <a class="src" href="apps/cli/README.md">apps/cli/README.md</a></span></li></ul></section><section class="group"><h2>Packages</h2><ul><li><a href="packages/config/README.html">@softeneers/config</a> <span class="meta">— <a class="src" href="packages/config/README.md">packages/config/README.md</a></span></li><li><a href="packages/env/README.html">@softeneers/env</a> <span class="meta">— <a class="src" href="packages/env/README.md">packages/env/README.md</a></span></li><li><a href="packages/db/README.html">@softeneers/db</a> <span class="meta">— <a class="src" href="packages/db/README.md">packages/db/README.md</a></span></li><li><a href="packages/auth/README.html">@softeneers/auth</a> <span class="meta">— <a class="src" href="packages/auth/README.md">packages/auth/README.md</a></span></li><li><a href="packages/email/README.html">@softeneers/email</a> <span class="meta">— <a class="src" href="packages/email/README.md">packages/email/README.md</a></span></li><li><a href="packages/storage/README.html">@softeneers/storage</a> <span class="meta">— <a class="src" href="packages/storage/README.md">packages/storage/README.md</a></span></li></ul></section><section class="group"><h2>Project</h2><ul><li><a href="CONTRIBUTING.html">Contributing</a> <span class="meta">— <a class="src" href="CONTRIBUTING.md">CONTRIBUTING.md</a></span></li><li><a href="TODO.html">Original plan & intent</a> <span class="meta">— <a class="src" href="TODO.md">TODO.md</a></span></li><li><a href="PROJECT-BENCHMARK.html">Maturity benchmark</a> <span class="meta">— <a class="src" href="PROJECT-BENCHMARK.md">PROJECT-BENCHMARK.md</a></span></li></ul></section><section class="group"><h2>For AI agents</h2><ul><li><a href="CLAUDE.html">Agent contract (Claude Code)</a> <span class="meta">— <a class="src" href="CLAUDE.md">CLAUDE.md</a></span></li><li><a href="AGENTS.html">Agent contract (cross-tool)</a> <span class="meta">— <a class="src" href="AGENTS.md">AGENTS.md</a></span></li></ul></section></div></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

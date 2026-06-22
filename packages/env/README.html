@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@softeneers/env — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="../../index.html">← All docs</a><span class="spacer"></span><a class="src" href="./README.md">view README.md source</a></div>
+<main><h1>@softeneers/env</h1>
+<p>Fail-fast environment validation so an app never boots with a broken <code>.env</code>. Wraps <a href="https://zod.dev">Zod</a> and throws a readable error listing every problem.</p>
+<h2>Usage</h2>
+<pre><code>import { createEnv, z } from "@softeneers/env";
+
+export const env = createEnv({
+  schema: {
+    PORT: z.coerce.number().default(4000),
+    DB_HOST: z.string().min(1),
+    DB_PORT: z.coerce.number().default(3306),
+    FRONTEND_URL: z.string().url(),
+  },
+});
+
+env.PORT; // number — typed, validated, frozen</code></pre>
+<p>If validation fails, <code>createEnv</code> throws <code>EnvValidationError</code>:</p>
+<pre><code>Invalid environment variables:
+  - DB_HOST: Required
+  - FRONTEND_URL: Invalid url</code></pre>
+<h2>API</h2>
+<ul>
+<li><code>createEnv({ schema, source? })</code> — validate <code>source</code> (default <code>process.env</code>)</li>
+</ul>
+<p>against a Zod raw shape; returns a frozen, typed object.</p>
+<ul>
+<li><code>EnvValidationError</code> — error thrown on failure, with <code>.issues</code>.</li>
+<li><code>z</code> — re-exported Zod, so consumers don't need a separate dependency.</li>
+</ul></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

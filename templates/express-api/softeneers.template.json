@@ -1,0 +1,17 @@
+{
+  "toggles": { "db": true, "auth": false, "docker": true },
+  "fragments": {
+    "db": {
+      "removePaths": ["src/db.ts", "src/scripts", "docker-compose.yml"],
+      "removeDeps": ["@softeneers/db", "mysql2"],
+      "removeScripts": ["db:migrate", "db:seed", "db:reset"]
+    },
+    "auth": {
+      "removePaths": ["src/auth"],
+      "removeDeps": ["@softeneers/auth"]
+    },
+    "docker": {
+      "removePaths": ["docker-compose.yml"]
+    }
+  }
+}

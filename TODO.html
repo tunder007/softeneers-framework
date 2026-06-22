@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Original plan & intent — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="./index.html">← All docs</a><span class="spacer"></span><a class="src" href="./TODO.md">view TODO.md source</a></div>
+<main><h1>Softeneers Framework — Getting Started Plan</h1>
+<h2>1. The Idea in Brief</h2>
+<p>Softeneers Framework should not be a full framework built from scratch, like Next.js. The better approach is a <strong>modular starter framework</strong> built on top of already-established technologies.</p>
+<p>The goal:</p>
+<pre><code>npx create-softeneers-app@latest my-app</code></pre>
+<p>or:</p>
+<pre><code>npm create softeneers-app@latest my-app</code></pre>
+<p>After running the command, the user chooses what to generate:</p>
+<ul>
+<li>fullstack application</li>
+<li>frontend only</li>
+<li>backend only</li>
+<li>monorepo with web + server + mobile</li>
+<li>auth included</li>
+<li>database included</li>
+<li>Docker included</li>
+<li>email service included</li>
+<li>storage included</li>
+</ul>
+<p>In practice, Softeneers Framework becomes a <strong>project generator</strong> plus a set of reusable packages.</p>
+<p>---</p>
+<h2>2. What You Want to Achieve</h2>
+<p>You want people to be able to start projects quickly, in an organized, scalable, and standardized way.</p>
+<p>Example:</p>
+<pre><code>npx create-softeneers-app@latest</code></pre>
+<p>The CLI asks:</p>
+<pre><code>Project name: my-app
+
+What type of project do you want?
+1. Fullstack app
+2. Frontend only
+3. Backend API only
+4. Advanced monorepo
+
+Frontend:
+1. Next.js
+2. TanStack Start
+3. None
+
+Backend:
+1. Hono
+2. Express
+3. None
+
+Database:
+1. MySQL
+2. PostgreSQL
+3. None
+
+ORM:
+1. Prisma
+2. Drizzle
+3. Sequelize
+
+Auth:
+1. better-auth
+2. none
+
+Email:
+1. Resend
+2. none
+
+Storage:
+1. S3 compatible
+2. none
+
+Docker:
+1. yes
+2. no</code></pre>
+<p>At the end, the project is generated automatically.</p>
+<p>---</p>
+<h2>3. Recommended Repository Structure</h2>
+<p>The main repository should be a monorepo.</p>
+<pre><code>softeneers-framework/
+  apps/
+    cli/
+    docs/
+    playground/
+
+  packages/
+    auth/
+    db/
+    env/
+    ui/
+    email/
+    storage/
+    logger/
+    api/
+    config/
+
+  templates/
+    next-fullstack/
+    tanstack-start/
+    hono-api/
+    express-api/
+    minimal/
+    monorepo-full/
+
+  package.json
+  pnpm-workspace.yaml
+  turbo.json
+  README.md</code></pre>
+<p>---</p>
+<h2>4. Role of Each Folder</h2>
+<h3><code>apps/cli</code></h3>
+<p>This is where the CLI lives — the tool that can be run with <code>npx</code>.</p>
+<p>Future example:</p>
+<pre><code>npx create-softeneers-app@latest my-app</code></pre>
+<p>It copies the chosen template and installs dependencies.</p>
+<p>---</p>
+<h3><code>apps/docs</code></h3>
+<p>Framework documentation.</p>
+<p>Can be built with:</p>
+<ul>
+<li>Next.js</li>
+<li>Nextra</li>
+<li>VitePress</li>
+<li>Astro</li>
+</ul>
+<p>To start, a well-written README may be enough.</p>
+<p>---</p>
+<h3><code>apps/playground</code></h3>
+<p>A demo project for testing the framework.</p>
+<p>Use this to verify that packages work together.</p>
+<p>---</p>
+<h3><code>packages/auth</code></h3>
+<p>Reusable authentication package.</p>
+<p>May include:</p>
+<ul>
+<li>setup for <code>better-auth</code></li>
+<li>session helpers</li>
+<li>backend middleware</li>
+<li>frontend hooks</li>
+<li>shared TypeScript types</li>
+</ul>
+<p>Import example:</p>
+<pre><code>import { auth } from "@softeneers/auth";</code></pre>
+<p>---</p>
+<h3><code>packages/db</code></h3>
+<p>Database package.</p>
+<p>May include:</p>
+<ul>
+<li>DB connection</li>
+<li>Prisma / Drizzle / Sequelize client</li>
+<li>migration helpers</li>
+<li>shared schemas</li>
+<li>seed scripts</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { db } from "@softeneers/db";</code></pre>
+<p>---</p>
+<h3><code>packages/env</code></h3>
+<p>Package for validating environment variables.</p>
+<p>Example:</p>
+<pre><code>import { env } from "@softeneers/env";</code></pre>
+<p>The goal is to prevent apps from starting with an incorrect <code>.env</code>.</p>
+<p>---</p>
+<h3><code>packages/ui</code></h3>
+<p>Reusable UI components.</p>
+<p>May include:</p>
+<ul>
+<li>Button</li>
+<li>Input</li>
+<li>Card</li>
+<li>Modal</li>
+<li>Form components</li>
+<li>Layout components</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { Button } from "@softeneers/ui";</code></pre>
+<p>---</p>
+<h3><code>packages/email</code></h3>
+<p>Email package.</p>
+<p>May include:</p>
+<ul>
+<li>Resend setup</li>
+<li>React Email templates</li>
+<li>functions for sending emails</li>
+<li>standard emails: welcome, reset password, invoice, order confirmation</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { sendEmail } from "@softeneers/email";</code></pre>
+<p>---</p>
+<h3><code>packages/storage</code></h3>
+<p>S3-compatible storage package.</p>
+<p>May include support for:</p>
+<ul>
+<li>AWS S3</li>
+<li>Cloudflare R2</li>
+<li>MinIO</li>
+<li>RustFS</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { uploadFile } from "@softeneers/storage";</code></pre>
+<p>---</p>
+<h3><code>packages/logger</code></h3>
+<p>Logging package.</p>
+<p>May include:</p>
+<ul>
+<li>standard logger</li>
+<li>request logging</li>
+<li>error logging</li>
+<li>integration with PostHog / Axiom / other services</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { logger } from "@softeneers/logger";</code></pre>
+<p>---</p>
+<h3><code>packages/api</code></h3>
+<p>Package for frontend-backend communication.</p>
+<p>May include:</p>
+<ul>
+<li>tRPC helpers</li>
+<li>oRPC helpers</li>
+<li>shared types</li>
+<li>API client</li>
+<li>middleware</li>
+</ul>
+<p>Example:</p>
+<pre><code>import { api } from "@softeneers/api";</code></pre>
+<p>---</p>
+<h3><code>packages/config</code></h3>
+<p>Shared configuration.</p>
+<p>May include:</p>
+<ul>
+<li>ESLint config</li>
+<li>Prettier config</li>
+<li>TypeScript config</li>
+<li>Tailwind config</li>
+<li>tsup config</li>
+</ul>
+<p>Example:</p>
+<pre><code>{
+  "extends": "@softeneers/config/tsconfig/base.json"
+}</code></pre>
+<p>---</p>
+<h2>5. Recommended npm Packages</h2>
+<p>Long term, you could publish:</p>
+<pre><code>create-softeneers-app
+@softeneers/auth
+@softeneers/db
+@softeneers/env
+@softeneers/ui
+@softeneers/email
+@softeneers/storage
+@softeneers/logger
+@softeneers/api
+@softeneers/config</code></pre>
+<p>The first important package is:</p>
+<pre><code>create-softeneers-app</code></pre>
+<p>The rest can come later.</p>
+<p>---</p>
+<h2>6. How the CLI Should Work</h2>
+<p>The CLI should do the following:</p>
+<ol>
+<li>ask what type of project you want</li>
+<li>select the appropriate template</li>
+<li>copy files into the new folder</li>
+<li>update <code>package.json</code></li>
+<li>generate <code>.env.example</code></li>
+<li>install dependencies</li>
+<li>display startup commands</li>
+</ol>
+<p>Final output example:</p>
+<pre><code>Done.
+
+Next steps:
+
+cd my-app
+pnpm install
+pnpm dev</code></pre>
+<p>---</p>
+<h2>7. A Realistic First Version</h2>
+<p>Do not try to build everything at once.</p>
+<p>For v1, build only:</p>
+<pre><code>softeneers-framework/
+  apps/
+    cli/
+
+  templates/
+    next-fullstack/
+    hono-api/
+
+  packages/
+    config/
+    env/
+
+  package.json
+  pnpm-workspace.yaml
+  turbo.json</code></pre>
+<p>That is enough to get started.</p>
+<p>---</p>
+<h2>8. Recommended Stack for v1</h2>
+<p>For the first version:</p>
+<pre><code>Package manager: pnpm
+Monorepo: Turborepo
+CLI: Node.js + TypeScript
+Frontend template: Next.js
+Backend template: Hono or Express
+Database: MySQL
+ORM: Prisma or Sequelize
+Auth: better-auth
+Styling: TailwindCSS
+Formatting: Prettier + ESLint</code></pre>
+<p>If you want something close to what you already use, start with:</p>
+<pre><code>Next.js + TailwindCSS + Express + Sequelize + MySQL</code></pre>
+<p>Then add more modern variants:</p>
+<pre><code>TanStack Start + Hono + Drizzle + better-auth</code></pre>
+<p>---</p>
+<h2>9. Work Stages</h2>
+<h3>Stage 1 — Monorepo Setup</h3>
+<p>Create the base structure:</p>
+<pre><code>mkdir softeneers-framework
+cd softeneers-framework
+pnpm init
+pnpm add -D turbo typescript</code></pre>
+<p>Create:</p>
+<pre><code>pnpm-workspace.yaml
+turbo.json
+apps/
+packages/
+templates/</code></pre>
+<p>---</p>
+<h3>Stage 2 — Simple Template</h3>
+<p>Create the first template:</p>
+<pre><code>templates/next-fullstack/</code></pre>
+<p>It can contain:</p>
+<pre><code>apps/
+  web/
+  server/
+
+packages/
+  config/
+  env/</code></pre>
+<p>---</p>
+<h3>Stage 3 — Simple CLI</h3>
+<p>Create:</p>
+<pre><code>apps/cli/</code></pre>
+<p>The CLI command should support:</p>
+<pre><code>npx create-softeneers-app my-app</code></pre>
+<p>To start, it can simply copy a fixed template.</p>
+<p>---</p>
+<h3>Stage 4 — Add CLI Prompts</h3>
+<p>Use a package such as:</p>
+<pre><code>prompts</code></pre>
+<p>or:</p>
+<pre><code>@clack/prompts</code></pre>
+<p>Example questions:</p>
+<pre><code>- Which frontend do you want?
+- Which backend do you want?
+- Do you want auth?
+- Do you want Docker?
+- Do you want email?</code></pre>
+<p>---</p>
+<h3>Stage 5 — Add Reusable Packages</h3>
+<p>Start with the simplest ones:</p>
+<pre><code>@softeneers/config
+@softeneers/env</code></pre>
+<p>Then:</p>
+<pre><code>@softeneers/db
+@softeneers/auth
+@softeneers/ui</code></pre>
+<p>---</p>
+<h3>Stage 6 — Publish to npm</h3>
+<p>Publish the CLI first:</p>
+<pre><code>npm publish</code></pre>
+<p>Then publish scoped packages:</p>
+<pre><code>npm publish --access public</code></pre>
+<p>Example:</p>
+<pre><code>npm publish packages/env --access public</code></pre>
+<p>---</p>
+<h2>10. Recommended Implementation Order</h2>
+<h3>Sprint 1</h3>
+<ul>
+<li>monorepo setup</li>
+<li>pnpm setup</li>
+<li>turbo setup</li>
+<li>Next.js + Express template</li>
+<li>initial README</li>
+</ul>
+<h3>Sprint 2</h3>
+<ul>
+<li>CLI that copies the template</li>
+<li><code>create-softeneers-app</code> command</li>
+<li><code>.env.example</code></li>
+<li>install scripts</li>
+</ul>
+<h3>Sprint 3</h3>
+<ul>
+<li><code>@softeneers/config</code></li>
+<li><code>@softeneers/env</code></li>
+<li>linting + formatting</li>
+<li>shared TypeScript config</li>
+</ul>
+<h3>Sprint 4</h3>
+<ul>
+<li><code>@softeneers/db</code></li>
+<li>Docker Compose for MySQL</li>
+<li>migrations</li>
+<li>seed</li>
+</ul>
+<h3>Sprint 5</h3>
+<ul>
+<li><code>@softeneers/auth</code></li>
+<li>better-auth integration</li>
+<li>login/register template</li>
+</ul>
+<h3>Sprint 6</h3>
+<ul>
+<li><code>@softeneers/email</code></li>
+<li>Resend</li>
+<li>React Email templates</li>
+</ul>
+<h3>Sprint 7</h3>
+<ul>
+<li><code>@softeneers/storage</code></li>
+<li>S3-compatible storage</li>
+<li>upload helper</li>
+</ul>
+<h3>Sprint 8</h3>
+<ul>
+<li>documentation</li>
+<li>examples</li>
+<li>npm publish</li>
+</ul>
+<p>---</p>
+<h2>11. Example of the Desired Final Command</h2>
+<pre><code>npx create-softeneers-app@latest my-school-platform</code></pre>
+<p>With options:</p>
+<pre><code>Frontend: Next.js
+Backend: Express
+Database: MySQL
+ORM: Sequelize
+Auth: yes
+Email: yes
+Storage: no
+Docker: yes</code></pre>
+<p>Output:</p>
+<pre><code>my-school-platform/
+  apps/
+    web/
+    server/
+
+  packages/
+    config/
+    env/
+    db/
+    auth/
+    email/
+
+  docker-compose.yml
+  package.json
+  pnpm-workspace.yaml
+  turbo.json
+  README.md</code></pre>
+<p>---</p>
+<h2>12. What NOT to Do at the Start</h2>
+<p>Do not try to build these from day one:</p>
+<ul>
+<li>a full routing framework</li>
+<li>your own rendering system</li>
+<li>your own ORM</li>
+<li>your own auth system</li>
+<li>your own bundler</li>
+<li>your own deploy system</li>
+</ul>
+<p>Use existing tools and build on top of them.</p>
+<p>Softeneers Framework should be a layer for <strong>organization, productivity, and standardization</strong>.</p>
+<p>---</p>
+<h2>13. Simple Project Definition</h2>
+<p>Softeneers Framework is a modular fullstack application generator, built to quickly bootstrap scalable projects using modern stacks such as Next.js, TanStack Start, Hono, Express, MySQL, better-auth, Docker, and reusable Softeneers packages.</p>
+<p>---</p>
+<h2>14. Clear MVP</h2>
+<p>The MVP should do only this:</p>
+<pre><code>npx create-softeneers-app my-app</code></pre>
+<p>and generate:</p>
+<pre><code>my-app/
+  apps/
+    web/
+    server/
+
+  packages/
+    config/
+    env/
+
+  package.json
+  pnpm-workspace.yaml
+  turbo.json
+  docker-compose.yml
+  README.md</code></pre>
+<p>If you achieve that, you already have the real foundation of the framework.</p>
+<p>---</p>
+<h2>15. Startup Checklist</h2>
+<ul>
+<li>[ ] Create the <code>softeneers-framework</code> repo</li>
+<li>[ ] Add <code>pnpm-workspace.yaml</code></li>
+<li>[ ] Add <code>turbo.json</code></li>
+<li>[ ] Create <code>apps/cli</code></li>
+<li>[ ] Create <code>templates/next-fullstack</code></li>
+<li>[ ] Create <code>packages/config</code></li>
+<li>[ ] Create <code>packages/env</code></li>
+<li>[ ] Make the CLI copy the template</li>
+<li>[ ] Test locally with <code>pnpm dev</code></li>
+<li>[ ] Test the CLI locally</li>
+<li>[ ] Publish beta to npm</li>
+<li>[ ] Create minimal documentation</li>
+<li>[ ] Add new templates gradually</li>
+</ul>
+<p>---</p>
+<h2>16. Final Recommendation</h2>
+<p>Start simple.</p>
+<p>The first version does not need to be perfect. It only needs to generate a working project.</p>
+<p>After that, you can add:</p>
+<ul>
+<li>auth</li>
+<li>db</li>
+<li>email</li>
+<li>storage</li>
+<li>logging</li>
+<li>tRPC/oRPC</li>
+<li>TanStack</li>
+<li>mobile</li>
+<li>full Docker setup</li>
+<li>deploy helpers</li>
+</ul>
+<p>The initial goal is to have a <code>npx create-softeneers-app</code> that actually works.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent contract (cross-tool) — Softeneers Framework</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { font: 16px/1.6 -apple-system, system-ui, sans-serif; max-width: 820px;
+  margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #1a1a1a; background: #fff; }
+@media (prefers-color-scheme: dark) { body { color: #e6e6e6; background: #141414; } }
+.bar { display: flex; flex-wrap: wrap; gap: .9rem; align-items: baseline;
+  padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid #8884; font-size: .9rem; }
+.bar .spacer { flex: 1; }
+.bar a { text-decoration: none; }
+.src { color: #8889; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #8883; padding-bottom: .3rem; }
+a { color: #2563eb; } @media (prefers-color-scheme: dark) { a { color: #6ea8fe; } }
+code { background: #8882; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+pre { background: #8881; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
+th, td { border: 1px solid #8884; padding: .4rem .6rem; text-align: left; }
+blockquote { border-left: 3px solid #8886; margin: 1rem 0; padding: .2rem 1rem; color: #8889; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-size: .85rem; color: #8889; }
+.groups { display: grid; gap: 1.5rem; }
+.group h2 { margin-top: 1.5rem; }
+.group ul { list-style: none; padding: 0; margin: .5rem 0; }
+.group li { margin: .35rem 0; }
+.group .meta { color: #8889; font-size: .85rem; }
+</style></head>
+<body>
+<div class="bar"><a href="./index.html">← All docs</a><span class="spacer"></span><a class="src" href="./AGENTS.md">view AGENTS.md source</a></div>
+<main><h1>CLAUDE.md</h1>
+<p>Entry contract for AI agents working in this repository. The authoritative, detailed docs live in <a href="docs/README.html"><code>docs/</code></a>; this file is the quick map. When anything seems to conflict, <a href="docs/DECISIONS.html"><code>docs/DECISIONS.md</code></a> wins.</p>
+<p><strong>Reading order:</strong> (1) this file, (2) <a href="docs/README.html"><code>docs/README.md</code></a> for the doc index, (3) the specific <a href="docs/README.html"><code>docs/</code></a> page for the area you're changing, (4) <a href="docs/DECISIONS.html"><code>docs/DECISIONS.md</code></a> for any tiebreak.</p>
+<h2>What this is</h2>
+<p><strong>Softeneers Framework</strong> — a modular project generator (<code>create-softeneers-app</code>) plus reusable <code>@softeneers/*</code> packages, as an <strong>npm-first, package-manager-agnostic</strong> monorepo (npm workspaces + Turborepo; pnpm also works). Node ≥ 18.</p>
+<h2>Commands</h2>
+<pre><code>npm ci            # reproducible install (use this, not `npm install`, for a clean tree)
+npm run build     # turbo build across packages + apps
+npm test          # docs-link test + per-package node:test suites
+npm run lint      # eslint . (single root pass)
+npm run typecheck # turbo typecheck
+npm run format    # prettier --write .
+node apps/cli/dist/index.js my-app --yes   # run the generator from source</code></pre>
+<h2>Layout</h2>
+<ul>
+<li><code>apps/cli</code> — <code>create-softeneers-app</code>. Source in <code>src/</code>: <code>args.ts</code>, <code>templates.ts</code>,</li>
+</ul>
+<p><code>scaffold.ts</code>, <code>prompts.ts</code>, <code>index.ts</code>. Bundles <code>templates/</code> on build.</p>
+<ul>
+<li><code>apps/docs</code> — zero-dep generator for the committed human-readable <code>.html</code></li>
+</ul>
+<p>companions beside each canonical <code>.md</code> (+ root <code>index.html</code>); run via <code>npm run build</code>.</p>
+<ul>
+<li><code>apps/landing</code> — Next.js marketing/landing page, <strong>standalone</strong> (not a workspace</li>
+</ul>
+<p>member), deployed to Vercel at &lt;https://softeneers-landing.vercel.app&gt;. Has its own deps/lockfile and <code>vercel.json</code> (<code>framework: nextjs</code>).</p>
+<ul>
+<li><code>packages/{config,env,db,auth,email,storage}</code> — the <code>@softeneers/*</code> libraries.</li>
+<li><code>templates/next-fullstack</code> — the project the CLI copies (Next.js <code>web</code> + Express/</li>
+</ul>
+<p>Sequelize/MySQL <code>server</code>). Payload, <strong>not</strong> a workspace member.</p>
+<ul>
+<li><code>docs/</code> — ARCHITECTURE, ROADMAP, CLI-SPEC, PACKAGES, DECISIONS, PUBLISHING (+ MANIFEST.json).</li>
+</ul>
+<h2>Rules (see docs/DECISIONS.md for the full rationale)</h2>
+<ul>
+<li><strong>npm-first, PM-agnostic.</strong> Don't add npm-only or pnpm-only assumptions. Both an</li>
+</ul>
+<p>npm <code>workspaces</code> field and <code>pnpm-workspace.yaml</code> ship; <code>package-lock.json</code> is the committed lockfile.</p>
+<ul>
+<li><strong>Build tooling lives at the root</strong> (one shared <code>typescript</code>/<code>tsx</code>/<code>eslint</code>/…).</li>
+</ul>
+<p>Packages declare only their runtime deps; <code>@softeneers/config</code> lists the lint stack as <code>peerDependencies</code>.</p>
+<ul>
+<li><strong>Templates are payload</strong> — never workspace members, never import <code>@softeneers/*</code></li>
+</ul>
+<p>from this repo, never ship <code>node_modules</code>/build output.</p>
+<ul>
+<li>Tasks run through Turbo; <strong>lint is the one exception</strong> (a single root <code>eslint .</code>).</li>
+<li>Every <code>@softeneers/*</code> package has <code>src/</code>, builds to <code>dist/</code>, ships a <code>node:test</code></li>
+</ul>
+<p>suite, and documents its contract in <code>docs/PACKAGES.md</code>.</p>
+<ul>
+<li>Never commit a real <code>.env</code> (only <code>.env.example</code>).</li>
+<li><strong>Docs are dual-format</strong> (D-07): edit the <code>.md</code> source, then <code>npm run build</code> to</li>
+</ul>
+<p>regenerate its committed <code>.html</code> companion. Never hand-edit a <code>.html</code> doc.</p>
+<h2>Verifying a change</h2>
+<pre><code>npm run build &amp;&amp; npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm test
+# CLI changes — generate into a temp dir and build the result:
+cd "$(mktemp -d)" &amp;&amp; node /ABS/PATH/apps/cli/dist/index.js demo --yes
+cd demo &amp;&amp; npm install &amp;&amp; npm run build</code></pre>
+<h2>Environment note</h2>
+<p>On some Node/npm versions, incremental <code>npm install</code> can leave a partially-hoisted tree (dangling <code>.bin</code>, a missing transitive). A clean <code>npm ci</code> (or <code>npm install</code> + <code>npm dedupe</code>) always produces a sound tree — prefer <code>npm ci</code>.</p></main>
+<footer>Softeneers Framework — human view generated from the canonical Markdown.
+Do not edit by hand; run <code>npm run build</code> (the <code>.md</code> is the source of truth).</footer>
+</body></html>
