@@ -2,24 +2,19 @@ import "dotenv/config";
 
 import { assertConnection } from "@softeneers/db";
 
-import { carStore } from "../cars/store.js";
+import { DEMO_CARS } from "../cars/demo.js";
+import { CarModel } from "../cars/store.js";
 import { sequelize } from "../db.js";
 
 await assertConnection(sequelize);
 await sequelize.sync();
 
-const existing = await carStore.list();
-if (existing.length > 0) {
-  console.log(`Skipped seeding — ${existing.length} cars already present.`);
+const count = await CarModel.count();
+if (count > 0) {
+  console.log(`Skipped seeding — ${count} cars already present.`);
 } else {
-  for (const car of [
-    { brand: "Toyota", model: "Corolla", year: 2021 },
-    { brand: "Tesla", model: "Model 3", year: 2023 },
-    { brand: "Ford", model: "Mustang", year: 1969 },
-  ]) {
-    await carStore.create(car);
-  }
-  console.log("Seeded 3 cars.");
+  await CarModel.bulkCreate([...DEMO_CARS]);
+  console.log(`Seeded ${DEMO_CARS.length} cars.`);
 }
 
 await sequelize.close();

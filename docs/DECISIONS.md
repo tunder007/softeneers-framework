@@ -72,3 +72,24 @@ never be hand-edited; edit the `.md` and regenerate.
 gitignored `apps/docs/dist/` site. The companions are now committed so the human
 view is part of the repo (and discoverable without a build step). The deployed
 Next.js site in `apps/landing` remains the public, dynamic marketing+docs site.
+
+## D-08 — A generated project must run a usable demo with one `npm run dev` (2026-06-23)
+
+The out-of-box experience is the product: `npx create-softeneers-app` → `npm run
+dev` must yield a working, **pre-seeded** CRUD demo with zero external setup, in
+**every** toggle combination. Concretely:
+
+- The `db`/`auth`/`docker` toggles all **default off**, so the default project is
+  a lean, zero-infrastructure in-memory demo.
+- The in-memory store is **pre-seeded** with a small demo garage inventory
+  (`cars/demo.ts` → `DEMO_CARS`), so the very first request/page render shows data.
+- With `--db`, the store **lazily self-initializes and gracefully falls back** to
+  the pre-seeded in-memory store when no database is reachable (it auto-creates
+  tables and auto-seeds when MySQL *is* reachable). So `npm run dev` works whether
+  or not Docker/MySQL is running — no manual `db:migrate`/`db:seed` required for a
+  demo. The explicit `db:migrate`/`db:seed`/`db:reset` scripts remain for control.
+- `--auth` mounts better-auth with its in-memory store, so sign-up/in work on
+  `npm run dev` without a database.
+
+Net: there is no toggle combination that requires more than `npm install && npm
+run dev` to see a working demo. Verified by runtime e2e against generated apps.

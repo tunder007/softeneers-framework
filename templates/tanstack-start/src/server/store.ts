@@ -1,9 +1,11 @@
 import type { Car, NewCar } from '../cars/types'
+import { DEMO_CARS } from './demo'
 
-// Server-only data layer behind the cars server functions. With `db` on it is
-// backed by MySQL (Sequelize via @softeneers/db); with it off it is an in-memory
-// Map. Both satisfy the same CarStore. This module is never bundled into the
-// client — it is only reached from server functions.
+// Server-only data layer behind the cars server functions. With `db` on it
+// persists to MySQL (Sequelize via @softeneers/db) and **falls back to an
+// in-memory store if the database is unreachable**, so `npm run dev` always
+// yields a working, pre-seeded demo. With `db` off it is always in-memory.
+// Never bundled into the client — only reached from server functions.
 export interface CarStore {
   list(): Promise<Array<Car>>
   get(id: number): Promise<Car | null>
@@ -11,8 +13,34 @@ export interface CarStore {
   remove(id: number): Promise<boolean>
 }
 
+// In-memory backend (the default, and the fallback when no database is reachable).
+function createMemoryStore(): CarStore {
+  let nextId = 1
+  const cars = new Map<number, Car>()
+  for (const car of DEMO_CARS) {
+    const id = nextId++
+    cars.set(id, { id, ...car })
+  }
+  return {
+    async list() {
+      return [...cars.values()].sort((a, b) => a.id - b.id)
+    },
+    async get(id) {
+      return cars.get(id) ?? null
+    },
+    async create(input) {
+      const car: Car = { id: nextId++, ...input }
+      cars.set(car.id, car)
+      return car
+    },
+    async remove(id) {
+      return cars.delete(id)
+    },
+  }
+}
+
 // #if db
-import { DataTypes, Model } from '@softeneers/db'
+import { DataTypes, Model, assertConnection } from '@softeneers/db'
 
 import { sequelize } from './db'
 
@@ -37,43 +65,68 @@ export { CarModel }
 
 const toCar = (m: CarModel): Car => ({ id: m.id, brand: m.brand, model: m.model, year: m.year })
 
+function createDbStore(): CarStore {
+  return {
+    async list() {
+      return (await CarModel.findAll({ order: [['id', 'ASC']] })).map(toCar)
+    },
+    async get(id) {
+      const m = await CarModel.findByPk(id)
+      return m ? toCar(m) : null
+    },
+    async create(input) {
+      return toCar(await CarModel.create(input))
+    },
+    async remove(id) {
+      const m = await CarModel.findByPk(id)
+      if (!m) return false
+      await m.destroy()
+      return true
+    },
+  }
+}
+
+// Resolve the backend once, lazily, on first use: try MySQL (create tables +
+// seed if empty); on any connection error, fall back to the in-memory store.
+let backend: Promise<CarStore> | null = null
+function resolveBackend(): Promise<CarStore> {
+  if (!backend) {
+    backend = (async () => {
+      try {
+        await assertConnection(sequelize)
+        await sequelize.sync()
+        const db = createDbStore()
+        if ((await db.list()).length === 0) {
+          for (const car of DEMO_CARS) await db.create(car)
+        }
+        console.log('Data store: MySQL')
+        return db
+      } catch {
+        console.warn(
+          'Data store: in-memory — database unreachable. Run `docker compose up -d` (and `npm run db:migrate && npm run db:seed`) for MySQL.',
+        )
+        return createMemoryStore()
+      }
+    })()
+  }
+  return backend
+}
+
 export const carStore: CarStore = {
   async list() {
-    return (await CarModel.findAll({ order: [['id', 'ASC']] })).map(toCar)
+    return (await resolveBackend()).list()
   },
   async get(id) {
-    const m = await CarModel.findByPk(id)
-    return m ? toCar(m) : null
+    return (await resolveBackend()).get(id)
   },
   async create(input) {
-    return toCar(await CarModel.create(input))
+    return (await resolveBackend()).create(input)
   },
   async remove(id) {
-    const m = await CarModel.findByPk(id)
-    if (!m) return false
-    await m.destroy()
-    return true
+    return (await resolveBackend()).remove(id)
   },
 }
 // #endif
 // #if !db
-let nextId = 1
-const cars = new Map<number, Car>()
-
-export const carStore: CarStore = {
-  async list() {
-    return [...cars.values()].sort((a, b) => a.id - b.id)
-  },
-  async get(id) {
-    return cars.get(id) ?? null
-  },
-  async create(input) {
-    const car: Car = { id: nextId++, ...input }
-    cars.set(car.id, car)
-    return car
-  },
-  async remove(id) {
-    return cars.delete(id)
-  },
-}
+export const carStore: CarStore = createMemoryStore()
 // #endif

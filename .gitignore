@@ -1,3 +1,6 @@
+# End-to-end scaffolding test output (generated demo apps)
+teste2e/
+
 # Environment files
 **/.env
 **/.env.local

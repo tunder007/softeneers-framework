@@ -39,16 +39,18 @@ functions — no hand-written API client, end-to-end type safety.
 ## Database
 
 Persistence is MySQL via Sequelize ([`@softeneers/db`](https://www.npmjs.com/package/@softeneers/db)).
-Set `DB_*` in `.env`, then:
+**`npm run dev` works immediately even without a database** — the server falls
+back to a pre-seeded in-memory store when MySQL is unreachable. To switch on real
+persistence, set `DB_*` in `.env` and start MySQL:
 
 ```bash
 # #if docker
 docker compose up -d   # start MySQL
 # #endif
+# The server auto-creates and seeds tables on first connect; these scripts give
+# you explicit control:
 npm run db:migrate && npm run db:seed
 ```
-
-Generate with `--no-db` to use a dependency-free in-memory store instead.
 # #endif
 # #if auth
 
@@ -63,11 +65,10 @@ served at `/api/auth/*`. Set a strong `AUTH_SECRET` in `.env`, and add the
 
 ```bash
 npm install
-# #if docker
-docker compose up -d
-# #endif
-# #if db
-npm run db:migrate && npm run db:seed
-# #endif
-npm run dev
+npm run dev          # a pre-seeded CRUD demo on http://localhost:3000 — no other setup
 ```
+# #if db
+
+The app starts immediately on an in-memory demo and uses MySQL automatically once
+it's reachable — see **Database** above to enable persistence.
+# #endif

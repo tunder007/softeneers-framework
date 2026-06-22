@@ -43,17 +43,18 @@ curl -X POST localhost:4000/api/cars -H 'content-type: application/json' \
 ## Database
 
 Persistence is MySQL via Sequelize ([`@softeneers/db`](https://www.npmjs.com/package/@softeneers/db)).
-Configure `DB_*` in `.env`, then:
+**`npm run dev` works immediately even without a database** — the store falls back
+to a pre-seeded in-memory one when MySQL is unreachable. To switch on real
+persistence, set `DB_*` in `.env` and start MySQL:
 
 ```bash
 # #if docker
 docker compose up -d   # start MySQL
 # #endif
+# The app auto-creates and seeds tables on first connect; these scripts give
+# you explicit control (e.g. reseeding or a clean reset):
 npm run db:migrate && npm run db:seed
 ```
-
-Generate with `--no-db` to swap in a dependency-free in-memory store — the CRUD
-API behaves identically.
 # #endif
 # #if auth
 
@@ -67,11 +68,10 @@ mounted at `/api/auth/*`. Set a strong `AUTH_SECRET` in `.env` before deploying.
 
 ```bash
 npm install
-# #if docker
-docker compose up -d
-# #endif
-# #if db
-npm run db:migrate && npm run db:seed
-# #endif
-npm run dev
+npm run dev          # a pre-seeded CRUD demo — no other setup needed
 ```
+# #if db
+
+The app starts immediately on an in-memory demo and uses MySQL automatically once
+it's reachable — see **Database** above to enable persistence.
+# #endif

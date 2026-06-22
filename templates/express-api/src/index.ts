@@ -3,12 +3,6 @@ import express from "express";
 
 import { carRouter } from "./cars/routes.js";
 import { env } from "./env.js";
-// #if db
-import { assertConnection } from "@softeneers/db";
-
-import { sequelize } from "./db.js";
-import "./cars/store.js"; // registers the Car model on the connection
-// #endif
 // #if auth
 import { toNodeHandler } from "@softeneers/auth";
 
@@ -38,18 +32,6 @@ app.use(
   },
 );
 
-async function start(): Promise<void> {
-  // #if db
-  await assertConnection(sequelize);
-  await sequelize.sync();
-  console.log("Database connected.");
-  // #endif
-  app.listen(env.PORT, () => {
-    console.log(`API running on http://localhost:${env.PORT}`);
-  });
-}
-
-start().catch((error) => {
-  console.error("Failed to start:", error);
-  process.exit(1);
+app.listen(env.PORT, () => {
+  console.log(`API running on http://localhost:${env.PORT}`);
 });

@@ -1,5 +1,5 @@
 {
-  "toggles": { "db": true, "auth": false, "docker": true },
+  "toggles": { "db": false, "auth": false, "docker": false },
   "fragments": {
     "db": {
       "removePaths": ["src/db.ts", "src/scripts", "docker-compose.yml"],
