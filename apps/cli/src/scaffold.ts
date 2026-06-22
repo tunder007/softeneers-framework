@@ -1,5 +1,13 @@
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, join } from "node:path";
 
 import { CliError, type PackageManager } from "./args.js";
@@ -109,6 +117,27 @@ function generateEnvFiles(targetDir: string): void {
   }
 }
 
+/**
+ * Restore `.gitignore` files. Templates ship them as `gitignore` (no dot) because
+ * npm strips a real `.gitignore` from a published package; on generation we rename
+ * each back so the project ignores node_modules/.env/etc. from the first commit.
+ */
+function restoreGitignores(targetDir: string): void {
+  const stack = [targetDir];
+  while (stack.length) {
+    const dir = stack.pop()!;
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "node_modules") continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(full);
+      } else if (entry.name === "gitignore") {
+        renameSync(full, join(dir, ".gitignore"));
+      }
+    }
+  }
+}
+
 /** Replace {{PROJECT_NAME}} placeholders in the README. */
 function substitutePlaceholders(targetDir: string, projectName: string): void {
   const readme = join(targetDir, "README.md");
@@ -123,6 +152,7 @@ export function transform(
   pkgName: string,
   pm: PackageManager,
 ): void {
+  restoreGitignores(targetDir);
   rewriteRootPackage(targetDir, pkgName, pm);
   generateEnvFiles(targetDir);
   substitutePlaceholders(targetDir, projectName);
