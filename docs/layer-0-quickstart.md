@@ -75,9 +75,13 @@ npx create-softeneers-app@latest . -t express-api --pm pnpm --yes
 npx create-softeneers-app@latest lib -t minimal --yes
 ```
 
-Flags: `-t/--template`, `--yes/-y`, `--db`/`--no-db`, `--auth`/`--no-auth`,
-`--docker`/`--no-docker`, `--no-install`, `--no-git`, `--pm <npm|pnpm|yarn>`.
-Full contract: [CLI-SPEC.md](./CLI-SPEC.md).
+Flags: `-t/--template`, `--yes/-y`, `--db`, `--auth`, `--docker`, `--email`,
+`--storage`, `--payments` (each with a `--no-*` form), `--no-install`,
+`--no-git`, `--pm <npm|pnpm|yarn>`. Full contract: [CLI-SPEC.md](./CLI-SPEC.md).
+
+Every toggle combination is build-and-typecheck verified, and the full apps are
+runtime-tested — see
+[Layer 1 → Verified combinations](./layer-1-packages.md#verified-combinations).
 
 ## Trying the demo
 

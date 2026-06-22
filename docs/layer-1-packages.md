@@ -47,6 +47,46 @@ toggles. A toggle being **off** means that package isn't installed at all.
 - **`@softeneers/config`** is tooling, not a runtime package — adopt it in your
   repo's `tsconfig`/`eslint`/`prettier` (see its Layer 2 page).
 
+## Verified combinations
+
+The API/fullstack templates expose **five composable feature toggles** —
+`--db`, `--auth`, `--email`, `--storage`, `--payments` — plus the file-only
+`--docker`. Five booleans means **2⁵ = 32 build-relevant combinations** per
+template. Every one is exercised by an exhaustive e2e matrix
+(generate → install → build → typecheck), and the full apps are runtime-booted:
+
+| Template | Combinations tested | How |
+| -------- | ------------------- | --- |
+| `express-api`    | **all 32** | generate → install → build → typecheck |
+| `hono-api`       | **all 32** | generate → install → build → typecheck |
+| `tanstack-start` | **14** (all-off, all-on, each single toggle, key pairs/triples) | generate → install → build → typecheck (heavier build, so a covering set) |
+| `minimal`        | 1 | generate → install → build → typecheck |
+| `next-fullstack` | 1 | generate → install → build → typecheck |
+
+**Runtime:** the **full** `express-api` and `hono-api` (every toggle on) boot with
+one `npm run dev` and serve correctly — `/health` → 200, a seeded `/api/cars`,
+the Stripe webhook rejects an unsigned body (→ 400), auth `sign-up/email`
+succeeds (→ 200), and the database **falls back to the pre-seeded in-memory
+store** when MySQL isn't running. `tanstack-start` (full) is runtime-verified too:
+the `/login`, `/account`, and `/billing` UIs render and auth sign-up works.
+
+> `--docker` only adds or removes `docker-compose.yml` — it never touches the
+> build or runtime, so it's covered structurally and is included in the full
+> runtime combos.
+
+### What turning a toggle on gives you
+
+| Toggle | Adds |
+| ------ | ---- |
+| `--db`       | MySQL persistence (with graceful in-memory fallback) |
+| `--auth`     | better-auth at `/api/auth/*` (+ sign-in/up UI in `tanstack-start`) |
+| `--email`    | a Resend mailer + a welcome-email route/server-fn |
+| `--storage`  | S3/R2/MinIO upload / signed-URL / delete routes |
+| `--payments` | Stripe checkout + subscription + portal + verified webhook (+ a `/billing` UI in `tanstack-start`) |
+| `--docker`   | a `docker-compose.yml` MySQL service |
+
+Any subset works together — that's what the matrix proves.
+
 ## Taking advantage of each combination
 
 Think of a generated project as a base you extend by turning packages on.

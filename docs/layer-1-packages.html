@@ -67,6 +67,29 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #8884; font-
 <li><strong><code>@softeneers/config</code></strong> is tooling, not a runtime package — adopt it in your</li>
 </ul>
 <p>repo's <code>tsconfig</code>/<code>eslint</code>/<code>prettier</code> (see its Layer 2 page).</p>
+<h2>Verified combinations</h2>
+<p>The API/fullstack templates expose <strong>five composable feature toggles</strong> — <code>--db</code>, <code>--auth</code>, <code>--email</code>, <code>--storage</code>, <code>--payments</code> — plus the file-only <code>--docker</code>. Five booleans means <strong>2⁵ = 32 build-relevant combinations</strong> per template. Every one is exercised by an exhaustive e2e matrix (generate → install → build → typecheck), and the full apps are runtime-booted:</p>
+<table><thead><tr><th>Template</th><th>Combinations tested</th><th>How</th></tr></thead><tbody>
+<tr><td><code>express-api</code></td><td><strong>all 32</strong></td><td>generate → install → build → typecheck</td></tr>
+<tr><td><code>hono-api</code></td><td><strong>all 32</strong></td><td>generate → install → build → typecheck</td></tr>
+<tr><td><code>tanstack-start</code></td><td><strong>14</strong> (all-off, all-on, each single toggle, key pairs/triples)</td><td>generate → install → build → typecheck (heavier build, so a covering set)</td></tr>
+<tr><td><code>minimal</code></td><td>1</td><td>generate → install → build → typecheck</td></tr>
+<tr><td><code>next-fullstack</code></td><td>1</td><td>generate → install → build → typecheck</td></tr>
+</tbody></table>
+<p><strong>Runtime:</strong> the <strong>full</strong> <code>express-api</code> and <code>hono-api</code> (every toggle on) boot with one <code>npm run dev</code> and serve correctly — <code>/health</code> → 200, a seeded <code>/api/cars</code>, the Stripe webhook rejects an unsigned body (→ 400), auth <code>sign-up/email</code> succeeds (→ 200), and the database <strong>falls back to the pre-seeded in-memory store</strong> when MySQL isn't running. <code>tanstack-start</code> (full) is runtime-verified too: the <code>/login</code>, <code>/account</code>, and <code>/billing</code> UIs render and auth sign-up works.</p>
+<blockquote><code>--docker</code> only adds or removes <code>docker-compose.yml</code> — it never touches the</blockquote>
+<blockquote>build or runtime, so it's covered structurally and is included in the full</blockquote>
+<blockquote>runtime combos.</blockquote>
+<h3>What turning a toggle on gives you</h3>
+<table><thead><tr><th>Toggle</th><th>Adds</th></tr></thead><tbody>
+<tr><td><code>--db</code></td><td>MySQL persistence (with graceful in-memory fallback)</td></tr>
+<tr><td><code>--auth</code></td><td>better-auth at <code>/api/auth/*</code> (+ sign-in/up UI in <code>tanstack-start</code>)</td></tr>
+<tr><td><code>--email</code></td><td>a Resend mailer + a welcome-email route/server-fn</td></tr>
+<tr><td><code>--storage</code></td><td>S3/R2/MinIO upload / signed-URL / delete routes</td></tr>
+<tr><td><code>--payments</code></td><td>Stripe checkout + subscription + portal + verified webhook (+ a <code>/billing</code> UI in <code>tanstack-start</code>)</td></tr>
+<tr><td><code>--docker</code></td><td>a <code>docker-compose.yml</code> MySQL service</td></tr>
+</tbody></table>
+<p>Any subset works together — that's what the matrix proves.</p>
 <h2>Taking advantage of each combination</h2>
 <p>Think of a generated project as a base you extend by turning packages on.</p>
 <h3>Just an API (default)</h3>

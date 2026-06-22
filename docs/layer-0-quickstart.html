@@ -79,7 +79,8 @@ npx create-softeneers-app@latest . -t express-api --pm pnpm --yes
 
 # A blank TypeScript starter
 npx create-softeneers-app@latest lib -t minimal --yes</code></pre>
-<p>Flags: <code>-t/--template</code>, <code>--yes/-y</code>, <code>--db</code>/<code>--no-db</code>, <code>--auth</code>/<code>--no-auth</code>, <code>--docker</code>/<code>--no-docker</code>, <code>--no-install</code>, <code>--no-git</code>, <code>--pm &lt;npm|pnpm|yarn&gt;</code>. Full contract: <a href="CLI-SPEC.html">CLI-SPEC.md</a>.</p>
+<p>Flags: <code>-t/--template</code>, <code>--yes/-y</code>, <code>--db</code>, <code>--auth</code>, <code>--docker</code>, <code>--email</code>, <code>--storage</code>, <code>--payments</code> (each with a <code>--no-*</code> form), <code>--no-install</code>, <code>--no-git</code>, <code>--pm &lt;npm|pnpm|yarn&gt;</code>. Full contract: <a href="CLI-SPEC.html">CLI-SPEC.md</a>.</p>
+<p>Every toggle combination is build-and-typecheck verified, and the full apps are runtime-tested — see <a href="layer-1-packages.html#verified-combinations">Layer 1 → Verified combinations</a>.</p>
 <h2>Trying the demo</h2>
 <p>The API templates ship a <strong>cars CRUD</strong> example (a small garage), pre-seeded so the first request returns data:</p>
 <pre><code># express-api / hono-api (port 4000)
